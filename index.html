@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Felix's weekly market notes for GOAT Academy — searchable archive.">
+<title>Felix's Notes Archive</title>
+<style>
+/* ── tokens ─────────────────────────────────────────────────────────────── */
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #f7f9fa;
+  --line: #e3e8ec;
+  --line-soft: #eef2f5;
+  --ink: #0d1417;
+  --ink-2: #46545c;
+  --ink-3: #7d8b93;
+
+  --brand: #14639e;          /* display title, active tab */
+  --brand-2: #1b9cd8;        /* eyebrows, links, rings */
+  --brand-ring: #1b9cd8;
+  --green: #17914c;          /* byline, read state */
+  --green-soft: #e6f4ec;
+  --lime: #c4f135;           /* progress pill */
+  --lime-ink: #1c2b06;
+  --welcome: #e9f3ef;
+  --welcome-line: #cfe3db;
+  --mark: #cfeaf7;
+  --shadow: 0 1px 2px rgba(13, 20, 23, .05);
+  --gold: #b8860b;
+
+  --ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+  --read: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #080a0b;
+    --panel: #121517;
+    --panel-2: #181c1f;
+    --line: #262c30;
+    --line-soft: #1e2427;
+    --ink: #f2f6f8;
+    --ink-2: #a8b4bb;
+    --ink-3: #77848b;
+
+    --brand: #2fa8e0;
+    --brand-2: #35b1e8;
+    --brand-ring: #1b9cd8;
+    --green: #3ddc84;
+    --green-soft: #10281b;
+    --lime: #c4f135;
+    --lime-ink: #16220a;
+    --welcome: #0b2723;
+    --welcome-line: #17443c;
+    --mark: #123c52;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4);
+    --gold: #e0b44c;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #080a0b;
+  --panel: #121517;
+  --panel-2: #181c1f;
+  --line: #262c30;
+  --line-soft: #1e2427;
+  --ink: #f2f6f8;
+  --ink-2: #a8b4bb;
+  --ink-3: #77848b;
+
+  --brand: #2fa8e0;
+  --brand-2: #35b1e8;
+  --brand-ring: #1b9cd8;
+  --green: #3ddc84;
+  --green-soft: #10281b;
+  --lime: #c4f135;
+  --lime-ink: #16220a;
+  --welcome: #0b2723;
+  --welcome-line: #17443c;
+  --mark: #123c52;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4);
+  --gold: #e0b44c;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.strip { height: 30px; background: linear-gradient(90deg,#0c5d5a 0%,#127fae 55%,#29a8e0 100%); }
+.wrap { max-width: 78rem; margin: 0 auto; padding: 0 1.5rem; }
+button { font: inherit; cursor: pointer; }
+
+/* ── header ─────────────────────────────────────────────────────────────── */
+.head { background: var(--panel); }
+.head-in { display: flex; align-items: flex-start; gap: 1rem; padding: 1.6rem 0 1.4rem; }
+.logo {
+  flex: none; width: 58px; height: 58px; border-radius: 15px; display: grid;
+  place-items: center; background: linear-gradient(150deg,#29a8e0,#0f6ba6);
+  box-shadow: 0 3px 10px rgba(20,99,158,.3);
+}
+.logo svg { width: 30px; height: 30px; }
+.titles { flex: 1; min-width: 0; }
+h1 {
+  margin: 0; font-size: clamp(1.6rem, 3.4vw, 2.35rem); font-weight: 800;
+  line-height: .97; letter-spacing: -.005em; text-transform: uppercase;
+  color: var(--brand); text-wrap: balance;
+}
+.hello { margin: .35rem 0 0; color: var(--ink-3); font-size: .95rem; }
+.head-side { display: flex; align-items: center; gap: .7rem; padding-top: .35rem; }
+.edition {
+  padding: .42rem .85rem; border-radius: 999px; background: var(--green-soft);
+  border: 1px solid var(--welcome-line); color: var(--green);
+  font-size: .69rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+}
+.tbtn {
+  width: 42px; height: 42px; border-radius: 999px; display: grid; place-items: center;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-2);
+}
+.tbtn:hover { color: var(--brand-2); border-color: var(--brand-2); }
+.tbtn svg { width: 19px; height: 19px; }
+.pill-stat {
+  padding: .45rem 1rem; border-radius: 999px; background: var(--lime);
+  color: var(--lime-ink); font-size: .92rem; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── tabs ───────────────────────────────────────────────────────────────── */
+.tabs { display: flex; gap: 2.2rem; border-bottom: 1px solid var(--line); background: var(--panel); }
+.tab {
+  padding: .1rem 0 1rem; background: none; border: 0; border-bottom: 3px solid transparent;
+  margin-bottom: -1px; color: var(--ink-2); font-size: .84rem; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+}
+.tab[aria-selected="true"] { color: var(--brand); border-bottom-color: var(--brand); }
+.tab:hover { color: var(--brand); }
+.tab .n { margin-left: .4rem; color: var(--ink-3); font-weight: 700; }
+
+/* ── layout ─────────────────────────────────────────────────────────────── */
+.cols { display: grid; grid-template-columns: minmax(0,1fr) 20.5rem; gap: 1.5rem; padding: 1.5rem 0 0; align-items: start; }
+@media (max-width: 62rem) { .cols { grid-template-columns: minmax(0,1fr); } aside { order: -1; } }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.pad { padding: 1.25rem 1.4rem; }
+
+/* welcome */
+.welcome { background: var(--welcome); border-color: var(--welcome-line); display: flex; gap: 1.3rem; align-items: center; }
+/* Monogram rather than a photo: the artifact CSP blocks external images, so a
+   remote avatar would render as a broken tile. */
+.avatar {
+  flex: none; width: 116px; height: 116px; border-radius: 999px;
+  border: 3px solid var(--brand-ring); display: grid; place-items: center;
+  background: linear-gradient(150deg,#29a8e0,#0f6ba6); color: #fff;
+  font-size: 2.9rem; font-weight: 800; letter-spacing: -.02em;
+}
+.eyebrow { font-size: .7rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: var(--brand-2); }
+.welcome h2 { margin: .3rem 0 .5rem; font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; }
+.welcome q { display: block; font-family: var(--read); font-style: italic; font-size: 1.02rem; color: var(--ink-2); quotes: '“' '”'; }
+.byline { margin: .6rem 0 0; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
+
+/* section head */
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 1.9rem 0 .8rem; }
+.sec-head h3 { margin: 0; font-size: 1.12rem; font-weight: 800; letter-spacing: -.01em; }
+.sec-head p { margin: 0; color: var(--ink-3); font-size: .85rem; }
+
+/* ── carousel ───────────────────────────────────────────────────────────── */
+.rail { display: flex; gap: .9rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: .2rem .2rem 1rem; margin: 0 -.2rem; }
+.rail::-webkit-scrollbar { height: 8px; }
+.rail::-webkit-scrollbar-thumb { background: var(--line); border-radius: 99px; }
+.mag {
+  flex: 0 0 17.5rem; scroll-snap-align: start; display: flex; flex-direction: column;
+  text-align: left; padding: 1.05rem 1.15rem; border-radius: 15px;
+  background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow);
+  color: inherit; transition: transform .14s ease, border-color .14s ease;
+}
+.mag:hover { transform: translateY(-3px); border-color: var(--brand-2); }
+.mag .k { display: flex; align-items: center; gap: .45rem; font-size: .68rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; color: var(--brand-2); }
+.mag h4 { margin: .55rem 0 .45rem; font-size: 1.02rem; font-weight: 750; line-height: 1.28; letter-spacing: -.01em; }
+.mag p { margin: 0; font-family: var(--read); font-size: .87rem; line-height: 1.5; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.mag .kinds { display: flex; flex-wrap: wrap; gap: .35rem; }
+.mag .kinds i {
+  font-style: normal; font-size: .68rem; font-weight: 750; letter-spacing: .04em;
+  padding: .22rem .55rem; border-radius: 6px; color: var(--ink-2);
+  background: var(--panel-2); border: 1px solid var(--line);
+}
+.mag .foot { margin-top: .8rem; padding-top: .7rem; border-top: 1px solid var(--line-soft); font-size: .73rem; font-weight: 700; color: var(--ink-3); display: flex; justify-content: space-between; }
+.latest { color: var(--lime-ink); background: var(--lime); padding: .1rem .42rem; border-radius: 5px; font-size: .6rem; letter-spacing: .08em; }
+
+/* ── filters ────────────────────────────────────────────────────────────── */
+.filters { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-bottom: 1rem; }
+.searchbox { position: relative; flex: 1 1 17rem; }
+.searchbox svg { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--ink-3); }
+#q {
+  width: 100%; padding: .62rem .8rem .62rem 2.3rem; border-radius: 10px;
+  background: var(--panel); border: 1px solid var(--line); color: var(--ink); font-size: .92rem;
+}
+#q:focus { outline: 2px solid var(--brand-2); outline-offset: -1px; }
+.chipbar { display: flex; gap: .4rem; flex-wrap: wrap; }
+.yr {
+  padding: .5rem .9rem; border-radius: 999px; background: var(--panel);
+  border: 1px solid var(--line); color: var(--ink-2); font-size: .78rem; font-weight: 750;
+}
+.yr[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+.yr:hover:not([aria-pressed="true"]) { border-color: var(--brand-2); color: var(--brand-2); }
+
+/* ── list ───────────────────────────────────────────────────────────────── */
+.list { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: var(--panel); }
+.ygroup { display: flex; align-items: center; gap: .7rem; padding: .7rem 1.15rem; background: var(--panel-2); border-bottom: 1px solid var(--line); }
+.ygroup b { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; }
+.ygroup span { font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.row { display: flex; align-items: center; gap: .35rem; border-bottom: 1px solid var(--line-soft); }
+.row:last-child { border-bottom: 0; }
+.row:hover { background: var(--panel-2); }
+.open {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: .9rem;
+  padding: .78rem .3rem .78rem 1.15rem; background: none; border: 0; color: inherit; text-align: left;
+}
+.dot { flex: none; width: 19px; height: 19px; border-radius: 999px; border: 2px solid var(--line); display: grid; place-items: center; }
+.dot svg { width: 11px; height: 11px; color: #fff; opacity: 0; }
+.is-read .dot { background: var(--green); border-color: var(--green); }
+.is-read .dot svg { opacity: 1; }
+.d { flex: none; width: 6.4rem; font-size: .82rem; font-weight: 700; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.t { flex: 1; min-width: 0; font-size: .97rem; font-weight: 700; letter-spacing: -.005em; }
+.is-read .t { font-weight: 500; color: var(--ink-2); }
+.ctx { display: block; margin-top: .18rem; font-family: var(--read); font-size: .84rem;
+       font-weight: 400; line-height: 1.45; color: var(--ink-3); }
+.mark-btn, .bm-btn {
+  flex: none; width: 36px; height: 36px; border-radius: 9px; background: none; border: 0;
+  color: var(--ink-3); display: grid; place-items: center;
+}
+.bm-btn { margin-right: .8rem; }
+.mark-btn:hover, .bm-btn:hover { background: var(--line-soft); color: var(--brand-2); }
+.mark-btn svg, .bm-btn svg { width: 18px; height: 18px; }
+.bm-btn[aria-pressed="true"] { color: var(--gold); }
+.bm-btn[aria-pressed="true"] svg { fill: currentColor; }
+.empty { padding: 3.5rem 1.5rem; text-align: center; color: var(--ink-3); }
+.empty b { display: block; margin-bottom: .3rem; color: var(--ink); font-size: 1.05rem; }
+
+/* ── sidebar ────────────────────────────────────────────────────────────── */
+aside { display: grid; gap: 1rem; }
+aside h3 { margin: 0 0 .9rem; font-size: 1.02rem; font-weight: 800; }
+.big { display: flex; align-items: baseline; gap: .6rem; }
+.big b { font-size: 2.5rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+.big span { color: var(--ink-3); font-size: .88rem; }
+.bars { display: flex; gap: .35rem; margin-top: 1rem; }
+.bars div { flex: 1; text-align: center; }
+.bars i { display: block; height: 6px; border-radius: 99px; background: var(--line); }
+.bars i.on { background: var(--brand-2); }
+.bars i.done { background: var(--green); }
+.bars em { display: block; margin-top: .45rem; font-size: .68rem; font-weight: 800; letter-spacing: .07em; font-style: normal; color: var(--ink-3); }
+.bars div.cur em { color: var(--brand-2); }
+.up { display: block; width: 100%; text-align: left; padding: .95rem 1.05rem; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); color: inherit; }
+.up:hover { border-color: var(--brand-2); }
+.up h4 { margin: .35rem 0 .3rem; font-size: 1rem; font-weight: 750; line-height: 1.3; }
+.up p { margin: 0 0 .55rem; font-size: .82rem; color: var(--ink-3); }
+.up .go { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--green); }
+.reflist { display: grid; }
+.reflist a { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--line-soft); color: inherit; text-decoration: none; font-size: .92rem; font-weight: 650; }
+.reflist a:last-child { border-bottom: 0; }
+.reflist a:hover { color: var(--brand-2); }
+.reflist span { color: var(--ink-3); }
+
+/* ── dialog ─────────────────────────────────────────────────────────────── */
+dialog {
+  width: min(46rem, 94vw); max-height: 88vh; padding: 0; border: 1px solid var(--line);
+  border-radius: 18px; background: var(--panel); color: var(--ink);
+  box-shadow: 0 24px 60px rgba(0,0,0,.3);
+}
+dialog::backdrop { background: rgba(4,8,10,.62); }
+.sheet { display: flex; flex-direction: column; max-height: 88vh; }
+.sheet-h { display: flex; gap: 1rem; align-items: flex-start; padding: 1.4rem 1.6rem 1.1rem; border-bottom: 1px solid var(--line); }
+.sheet-h h2 { margin: .32rem 0 .35rem; font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.18; }
+.sheet-h p { margin: 0; font-size: .83rem; color: var(--ink-3); }
+.sheet-acts { display: flex; gap: .4rem; flex: none; }
+.sheet-b { padding: 1.3rem 1.6rem 1.7rem; overflow-y: auto; }
+.prose { font-family: var(--read); font-size: 1.02rem; line-height: 1.68; white-space: pre-wrap; overflow-wrap: break-word; margin: 0 0 1.3rem; }
+.srcbox { padding: 1rem 1.15rem; border-radius: 13px; background: var(--panel-2); border: 1px solid var(--line); margin-bottom: .8rem; }
+.srcbox h5 { margin: 0 0 .65rem; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.srcbox ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .45rem; }
+.srcbox a { color: var(--brand-2); font-size: .92rem; font-weight: 650; text-decoration: none; }
+.srcbox a:hover { text-decoration: underline; }
+mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 .12em; }
+
+footer { margin-top: 2.5rem; padding: 1.5rem 0 2.5rem; border-top: 1px solid var(--line); color: var(--ink-3); font-size: .82rem; }
+footer p { margin: 0 0 .35rem; }
+:focus-visible { outline: 2px solid var(--brand-2); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 40rem) {
+  .head-in { flex-wrap: wrap; }
+  .welcome { flex-direction: column; text-align: center; }
+  .d { width: 100%; }
+  .open { flex-wrap: wrap; gap: .3rem .8rem; }
+  .tabs { overflow-x: auto; gap: 1.3rem; }
+}
+</style>
+
+<div class="strip"></div>
+
+<header class="head">
+  <div class="wrap">
+    <div class="head-in">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 17l5-5 4 3 6-7"/><path d="M14 8h5v5"/>
+        </svg>
+      </div>
+      <div class="titles">
+        <h1>Felix&rsquo;s<br>Market Notes</h1>
+        <p class="hello">Welcome back, Giulia</p>
+      </div>
+      <div class="head-side">
+        <span class="edition" id="edition">71 notes</span>
+        <button class="tbtn" id="theme" aria-label="Switch theme"></button>
+        <span class="pill-stat" id="pct">0%</span>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="all" aria-selected="true">All notes <span class="n" id="c-all"></span></button>
+      <button class="tab" role="tab" data-tab="unread" aria-selected="false">Unread <span class="n" id="c-unread"></span></button>
+      <button class="tab" role="tab" data-tab="bookmarked" aria-selected="false">Bookmarked <span class="n" id="c-bm"></span></button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cols">
+    <main>
+      <section class="card welcome pad">
+        <div class="avatar" aria-hidden="true">F</div>
+        <div>
+          <span class="eyebrow">The archive</span>
+          <h2>Every note, in one place</h2>
+          <q>Six months of market calls, sector reads and watchlists &mdash; recovered from
+          the community and kept together, wherever you are in your trading journey.</q>
+          <p class="byline">&middot; Felix, Founder of GOAT Academy</p>
+        </div>
+      </section>
+
+      <div class="sec-head">
+        <h3>Latest notes</h3>
+        <p>The five most recent, newest first</p>
+      </div>
+      <div class="rail" id="rail"></div>
+
+      <div class="sec-head">
+        <h3>Browse the archive</h3>
+        <p id="listnote"></p>
+      </div>
+
+      <div class="filters">
+        <div class="searchbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+          </svg>
+          <input id="q" type="search" placeholder="Search notes &mdash; gold, VIX, rotation, breakout&hellip;"
+                 aria-label="Search notes" autocomplete="off">
+        </div>
+        <div class="chipbar" id="years"></div>
+      </div>
+
+      <div class="list" id="list"></div>
+    </main>
+
+    <aside>
+      <section class="card pad">
+        <h3>Next up</h3>
+        <button class="up" id="nextup"></button>
+      </section>
+
+      <section class="card pad">
+        <h3>Your reading</h3>
+        <div class="big"><b id="bigpct">0%</b><span id="bigsub"></span></div>
+        <div class="bars" id="bars"></div>
+      </section>
+
+      <section class="card pad">
+        <h3>Reference</h3>
+        <div class="reflist">
+          <a href="https://friends.goatacademy.org/spaces/19161480/content" target="_blank" rel="noopener noreferrer">Notes space <span>&rarr;</span></a>
+          <a href="https://breakout.goatacademy.org/" target="_blank" rel="noopener noreferrer">Breakout Tool <span>&rarr;</span></a>
+          <a href="https://friends.goatacademy.org/spaces/22780196" target="_blank" rel="noopener noreferrer">Felix&rsquo;s Tools <span>&rarr;</span></a>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <p>Charts and watchlists live inside the original documents and are preserved as links, so nothing is silently lost.</p>
+    <p>Historical market commentary, archived for reference. Not financial advice.</p>
+  </footer>
+</div>
+
+<dialog id="sheet"><div class="sheet">
+  <div class="sheet-h">
+    <div style="flex:1;min-width:0">
+      <span class="eyebrow" id="s-date"></span>
+      <h2 id="s-title"></h2>
+      <p id="s-by"></p>
+    </div>
+    <div class="sheet-acts">
+      <button class="bm-btn" id="s-bm" aria-pressed="false" title="Bookmark" style="margin:0"></button>
+      <button class="mark-btn" id="s-close" title="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="sheet-b" id="s-body"></div>
+</div></dialog>
+
+<script>
+const DATA = {"notes": [{"id": "105686196", "title": "Felix's notes for 8 August 2026", "date": "2026-08-08", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-8-august-2026", "postText": "We've updated the format of your weekly notes!\nYou'll now see two links each week:\n Felix's Notes – Your weekly market commentary and outlook.\n❤ Heartbeat Scanner – Our new interactive watchlist with stock charts, industry trends, breakout prices, and key metrics.\nBe sure to watch the video below, where Felix walks you through the new Heartbeat Scanner and how to use it.\nDon't forget to check out the Exit Rules modules and join our weekly live sessions covering stop-loss strategies.\n Felix's Notes:https://goatacademy.org/felix-notes-2026-08-08\n❤ Heartbeat Scanner:https://app.goatacademy.org/heartbeat-2026-08-08", "body": null, "words": 0, "teaser": "This week's market note, linking to full written commentary, the Heartbeat Scanner watchlist and a walkthrough video.", "kinds": ["article", "heartbeat", "video"], "links": [{"kind": "article", "url": "https://goatacademy.org/felix-notes-2026-08-08/"}, {"kind": "article", "url": "https://goatacademy.org/felix-notes-2026-08-08"}, {"kind": "heartbeat", "url": "https://app.goatacademy.org/heartbeat-2026-08-08"}, {"kind": "video", "url": "https://video.mn.co/assets/159709337/heart_beat_scan_felix.mp4"}]}, {"id": "105380082", "title": "Felix's notes for 1 August 2026", "date": "2026-08-01", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-1-august-2026", "postText": "We've updated the format of your weekly notes!\nYou'll now see two links each week:\n Felix's Notes – Your weekly market commentary and outlook.\n❤ Heartbeat Scanner – Our new interactive watchlist with stock charts, industry trends, breakout prices, and key metrics.\nBe sure to watch the video below, where Felix walks you through the new Heartbeat Scanner and how to use it.\nDon't forget to check out the Exit Rules modules and join our weekly live sessions covering stop-loss strategies.\n Felix's Notes:https://goatacademy.org/felix-notes-2026-08-01\n❤ Heartbeat Scanner:https://app.goatacademy.org/heartbeat-2026-08-01", "body": null, "words": 0, "teaser": "This week's market note, linking to full written commentary, the Heartbeat Scanner watchlist and a walkthrough video.", "kinds": ["article", "heartbeat", "video"], "links": [{"kind": "article", "url": "https://goatacademy.org/felix-notes-2026-08-01/"}, {"kind": "article", "url": "https://goatacademy.org/felix-notes-2026-08-01"}, {"kind": "heartbeat", "url": "https://app.goatacademy.org/heartbeat-2026-08-01"}, {"kind": "video", "url": "https://video.mn.co/assets/159709337/heart_beat_scan_felix.mp4"}]}, {"id": "105061882", "title": "Felix's notes for 25 July 2026", "date": "2026-07-25", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-25-july-2026", "postText": "We've updated the format of your weekly notes!\nYou'll now see two links each week:\n Felix's Notes – Your weekly market commentary and outlook.\n❤ Heartbeat Scanner – Our new interactive watchlist with stock charts, industry trends, breakout prices, and key metrics.\nBe sure to watch the video below, where Felix walks you through the new Heartbeat Scanner and how to use it.\nDon't forget to check out the Exit Rules modules and join our weekly live sessions covering stop-loss strategies.\n Felix's Notes:https://goatacademy.org/felix-notes-2026-07-25/\n❤ Heartbeat Scanner:https://app.goatacademy.org/heartbeat-2026-07-25", "body": null, "words": 0, "teaser": "This week's market note, linking to full written commentary, the Heartbeat Scanner watchlist and a walkthrough video.", "kinds": ["article", "heartbeat", "video"], "links": [{"kind": "article", "url": "https://goatacademy.org/felix-notes-2026-07-25/"}, {"kind": "heartbeat", "url": "https://app.goatacademy.org/heartbeat-2026-07-25"}, {"kind": "video", "url": "https://video.mn.co/assets/159709337/heart_beat_scan_felix.mp4"}]}, {"id": "104757813", "title": "Felix's notes for 18 July 2026", "date": "2026-07-18", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-18-july-2026", "postText": "We've updated the format of your weekly notes!\nYou'll now see two links each week:\n Felix's Notes – Your weekly market commentary and outlook.\n❤ Heartbeat Scanner – Our new interactive watchlist with stock charts, industry trends, breakout prices, and key metrics.\nBe sure to watch the video below, where Felix walks you through the new Heartbeat Scanner and how to use it.\nDon't forget to check out the Exit Rules modules and join our weekly live sessions covering stop-loss strategies.\n Felix's Notes:https://goatacademy.org/felix-notes-july-182026/\n❤ Heartbeat Scanner:https://app.goatacademy.org/heartbeat-2026-07-18", "body": null, "words": 0, "teaser": "This week's market note, linking to full written commentary, the Heartbeat Scanner watchlist and a walkthrough video.", "kinds": ["article", "heartbeat", "video"], "links": [{"kind": "article", "url": "https://goatacademy.org/felix-notes-july-182026/"}, {"kind": "heartbeat", "url": "https://app.goatacademy.org/heartbeat-2026-07-18"}, {"kind": "video", "url": "https://video.mn.co/assets/159709337/heart_beat_scan_felix.mp4"}]}, {"id": "104464139", "title": "Felix's notes for 12 July 2026", "date": "2026-07-12", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-12-july-2026", "postText": "New format for the weekly report, with a clearer visual of industry patterns, and a fully reworked watchlist that now show stock and industry chart. The stop loss columns were removed on compliance advice. Checkout the modules on exit rules and our weekly live sessions on stops.https://goatacademy.org/felix-notes-july-122026/https://app.goatacademy.org/heartbeat-july-122026", "body": null, "words": 0, "teaser": "New format for the weekly report, with a clearer visual of industry patterns, and a fully reworked watchlist that now show stock and industry chart. The stop loss…", "kinds": ["article", "heartbeat"], "links": [{"kind": "article", "url": "https://goatacademy.org/felix-notes-july-122026/"}, {"kind": "heartbeat", "url": "https://app.goatacademy.org/heartbeat-july-122026"}]}, {"id": "103862164", "title": "Felix's notes for 28 June 2026", "date": "2026-06-28", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-28-june-2026", "postText": "https://docs.google.com/document/d/1EUGEjZUbx9JzZL7_AP7_kerTyl26q9k-A4Bg0YMgi-Y/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1EUGEjZUbx9JzZL7_AP7_kerTyl26q9k-A4Bg0YMgi-Y/edit"}]}, {"id": "103862157", "title": "Felix's notes for 21 June 2026", "date": "2026-06-21", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-21-june-2026", "postText": "https://docs.google.com/document/d/12BzZYsKNIzpA2pSUpPX2NSsywrCZfP3wAj6Vqkt-13U/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/12BzZYsKNIzpA2pSUpPX2NSsywrCZfP3wAj6Vqkt-13U/edit"}]}, {"id": "103266380", "title": "Felix's notes for 14 June 2026", "date": "2026-06-14", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-14-june-2026", "postText": "https://docs.google.com/document/d/1VmX9efUmlcHvWgbKBHu1_HT5ez2Ge6umJmb0zb3RF3c/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1VmX9efUmlcHvWgbKBHu1_HT5ez2Ge6umJmb0zb3RF3c/edit"}]}, {"id": "103266376", "title": "Felix's notes for 7 June 2026", "date": "2026-06-07", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-7-june-2026", "postText": "https://docs.google.com/document/d/1TehQNzntpHKdD--03UNsVkxwUcI7wO6-OwLqFcI_CeI/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1TehQNzntpHKdD--03UNsVkxwUcI7wO6-OwLqFcI_CeI/edit"}]}, {"id": "102403587", "title": "Felix's notes for 24 May 2026", "date": "2026-05-24", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-24-may-2026", "postText": "https://docs.google.com/document/d/1oL_YSKA0JeOUhDCrYuMnNqLAeIU-dovzWF4AiEtme9o/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1oL_YSKA0JeOUhDCrYuMnNqLAeIU-dovzWF4AiEtme9o/edit"}]}, {"id": "102403522", "title": "Felix's notes for 17 May 2026", "date": "2026-05-17", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-17-may-2026", "postText": "https://docs.google.com/document/d/1MVZ8VV76UEdlGYJff7dzGfFuFajoAS6yOQEt0t0GmAw/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1MVZ8VV76UEdlGYJff7dzGfFuFajoAS6yOQEt0t0GmAw/edit"}]}, {"id": "102104282", "title": "Felix's notes for 10 May 2026", "date": "2026-05-10", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-10-may-2026", "postText": "https://docs.google.com/document/d/1803Hx7cEcYVVikFvG_otyHoNqScSYJXyou3GUnRRtDM/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1803Hx7cEcYVVikFvG_otyHoNqScSYJXyou3GUnRRtDM/edit"}]}, {"id": "101795088", "title": "Felix's notes for 3 May 2026", "date": "2026-05-03", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-3-may-2026", "postText": "https://docs.google.com/document/d/1RSxf7N2TUAUmg3aDOBck9jsSjVh4IG-ADclkCKN6gJI/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1RSxf7N2TUAUmg3aDOBck9jsSjVh4IG-ADclkCKN6gJI/edit"}]}, {"id": "101210415", "title": "Felix's notes for 26 April 2026", "date": "2026-04-26", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-26-april-2026", "postText": "https://docs.google.com/document/d/12l8RNZHC-KLkUMXrKbm4S2xUixI4xaqZIVGf8xcG7Sk/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/12l8RNZHC-KLkUMXrKbm4S2xUixI4xaqZIVGf8xcG7Sk/edit"}]}, {"id": "101210414", "title": "Felix's notes for 19 April 2026", "date": "2026-04-19", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-19-april-2026", "postText": "https://docs.google.com/document/d/1_xg3ws6xFjGUO1Vz2rHa6B8iUsaDk5_l0xaiHyBw_0s/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1_xg3ws6xFjGUO1Vz2rHa6B8iUsaDk5_l0xaiHyBw_0s/edit"}]}, {"id": "100889767", "title": "Felix's notes for 12 April 2026", "date": "2026-04-12", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-12-april-2026", "postText": "https://docs.google.com/document/d/1pI8jVpHUVPMW_O0SFFPkDzDsd2RICw76enjUlUN85O8/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1pI8jVpHUVPMW_O0SFFPkDzDsd2RICw76enjUlUN85O8/edit"}]}, {"id": "100594336", "title": "Felix's notes for 5 April 2026", "date": "2026-04-05", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-5-april-2026", "postText": "https://docs.google.com/document/d/1CdTcoWBaVoG0yq3RjjHkEgnO3XE_FbJilaYw1uMA4iE/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1CdTcoWBaVoG0yq3RjjHkEgnO3XE_FbJilaYw1uMA4iE/edit"}]}, {"id": "100279604", "title": "Felix's notes for 29 March 2026", "date": "2026-03-29", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-29-march-2026", "postText": "https://docs.google.com/document/d/1II-Q56tTnYBMH2NYDtMYHy6-1p2VCd6VWK1OLtuk5B4/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1II-Q56tTnYBMH2NYDtMYHy6-1p2VCd6VWK1OLtuk5B4/edit"}]}, {"id": "100279605", "title": "Felix's notes for 22 March 2026", "date": "2026-03-22", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-22-march-2026", "postText": "https://docs.google.com/document/d/1LEVG7-YyB_jNU64nEkBGIJ6WVhVbZxSH8eid0eg6QBY/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1LEVG7-YyB_jNU64nEkBGIJ6WVhVbZxSH8eid0eg6QBY/edit"}]}, {"id": "100279606", "title": "Felix's notes for 16 March 2026", "date": "2026-03-16", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-16-march-2026", "postText": "With the ongoing war and a highly volatile Vix and oil market, I continue to urge caution.\nThe rebound yesterday was mostly in the badly beaten up stocks and there may well be opportunity in a rebound rally, though I doubt it is a high quality rally.\nOur breakout scanner continues to highlight every move for you. Check out the new rotation tracker and you may see why I am cautious.https://docs.google.com/document/d/1-hTGgYOKpsjZwnflYxXDV4-hANZ7F_Snmz1CcxFXUNw/edit?tab=t.0", "body": null, "words": 0, "teaser": "With the ongoing war and a highly volatile Vix and oil market, I continue to urge caution. The rebound yesterday was mostly in the badly beaten up stocks and there…", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1-hTGgYOKpsjZwnflYxXDV4-hANZ7F_Snmz1CcxFXUNw/edit"}]}, {"id": "100279607", "title": "Felix's notes for 8 March 2026", "date": "2026-03-08", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-8-march-2026", "postText": "https://docs.google.com/document/d/1Jsemace_3mMKel-dp1NDXdCyofqrMlHVgwGtetxVBUU/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1Jsemace_3mMKel-dp1NDXdCyofqrMlHVgwGtetxVBUU/edit"}]}, {"id": "100279608", "title": "Felix's notes for 2 March 2026", "date": "2026-03-02", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-2-march-2026", "postText": "https://docs.google.com/document/d/16Qy5cs6ZkcoFtIlK02YlShKfg5a_7DK-oojvalm3xlM/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/16Qy5cs6ZkcoFtIlK02YlShKfg5a_7DK-oojvalm3xlM/edit"}]}, {"id": "100279609", "title": "Felix's notes for 22 February 2026", "date": "2026-02-22", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-22-february-2026", "postText": "https://docs.google.com/document/d/1EKnCliKJjniKTrhF0zGXaa9ecq6pt3GHn8t6NmJM6ZA/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1EKnCliKJjniKTrhF0zGXaa9ecq6pt3GHn8t6NmJM6ZA/edit"}]}, {"id": "100279610", "title": "Felix's notes for 15 February 2026", "date": "2026-02-15", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-15-february-2026", "postText": "https://docs.google.com/document/d/13MqKcegtz0WdCskA9WUY2t4eDXdbwe2Bvoq73p4hNLo/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/13MqKcegtz0WdCskA9WUY2t4eDXdbwe2Bvoq73p4hNLo/edit"}]}, {"id": "100279611", "title": "Felix's notes for 8 February 2026", "date": "2026-02-08", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-8-february-2026", "postText": "https://docs.google.com/document/d/1ZOzdvfLKsPLYx36k-fYaIu7tHtFUOkCVljDliU4L4hc/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1ZOzdvfLKsPLYx36k-fYaIu7tHtFUOkCVljDliU4L4hc/edit"}]}, {"id": "100279612", "title": "Felix's notes for 1 February 2026", "date": "2026-02-01", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-1-february-2026", "postText": "https://docs.google.com/document/d/1yiTuPqf2ZR2ID6eXN1WHhhLieAE6YMA3hCRsLza4QmM/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1yiTuPqf2ZR2ID6eXN1WHhhLieAE6YMA3hCRsLza4QmM/edit"}]}, {"id": "100279613", "title": "Felix's notes for 25 Jan 2026", "date": "2026-01-25", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-25-jan-2026", "postText": "https://docs.google.com/document/d/1PvElmi6tfnQ9gaPdH82vf2hNu0IoKOXjT2b4qQciPf0/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1PvElmi6tfnQ9gaPdH82vf2hNu0IoKOXjT2b4qQciPf0/edit"}]}, {"id": "100279614", "title": "Felix's notes for 18 Jan 2026", "date": "2026-01-18", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-18-jan-2026", "postText": "https://docs.google.com/document/d/1vLAfvjOrGxaUZCI1uKq3fXwB9A5rI0GbTCfKIcgwTTE/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1vLAfvjOrGxaUZCI1uKq3fXwB9A5rI0GbTCfKIcgwTTE/edit"}]}, {"id": "100279615", "title": "Felix's notes for 11 Jan 2026", "date": "2026-01-11", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-11-jan-2026", "postText": "https://docs.google.com/document/d/1onf1U1rL3POqpHa9ICQO66AL5Qq3bVDkTbK9MbmFfXs/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1onf1U1rL3POqpHa9ICQO66AL5Qq3bVDkTbK9MbmFfXs/edit"}]}, {"id": "100279616", "title": "Felix's notes for 4 Jan 2026", "date": "2026-01-04", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-4-jan-2026", "postText": "https://docs.google.com/document/d/1OqQKKAibfdtlwm9AIVjK1tx71uUxvY9LvKdMsm2Pkfo/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1OqQKKAibfdtlwm9AIVjK1tx71uUxvY9LvKdMsm2Pkfo/edit"}]}, {"id": "97718264", "title": "Felix's notes for 21 Dec 2025", "date": "2025-12-21", "author": "Giulia May | Community Admin", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-21-dec-2025", "postText": "https://docs.google.com/document/d/1lRS0bai-0CBFTcwwcEu1gXoy7aWbylWZpmWNNdpf-_0/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1lRS0bai-0CBFTcwwcEu1gXoy7aWbylWZpmWNNdpf-_0/edit"}]}, {"id": "95033267", "title": "Felix's notes for 14 Dec 2025", "date": "2025-12-14", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-14-dec-2025", "postText": "https://docs.google.com/document/d/1K3ftdoZK0UjNTUJWCvcPzqs3TvEtfBHzZXp7LWltIis/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1K3ftdoZK0UjNTUJWCvcPzqs3TvEtfBHzZXp7LWltIis/edit"}]}, {"id": "95032650", "title": "Felix's notes for 7 Dec 2025", "date": "2025-12-07", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-7-dec-2025", "postText": "https://docs.google.com/document/d/1bVxovWXw8kIlrbD5FcGnZ1BBQ0IpzxhUiIg6ZmzFBTw/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1bVxovWXw8kIlrbD5FcGnZ1BBQ0IpzxhUiIg6ZmzFBTw/edit"}]}, {"id": "97718306", "title": "Felix's notes for 23 Nov 2025", "date": "2025-11-23", "author": "Giulia May | Community Admin", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-23-nov-2025", "postText": "https://docs.google.com/document/d/1aIAWvogAQqq3fCTq2H4k27dEQIvofn8XaDDMzeEkIjg/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1aIAWvogAQqq3fCTq2H4k27dEQIvofn8XaDDMzeEkIjg/edit"}]}, {"id": "94081594", "title": "Felix's notes for 16 Nov 2025", "date": "2025-11-16", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-16-nov-2025", "postText": "https://docs.google.com/document/d/1wJrbB6FOHjs3AcIsX7nvGlkilh2IGm1wUTWB2LgwV4U/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1wJrbB6FOHjs3AcIsX7nvGlkilh2IGm1wUTWB2LgwV4U/edit"}]}, {"id": "93762527", "title": "Felix's notes for 9 Nov 2025", "date": "2025-11-09", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-9-nov-2025", "postText": "https://docs.google.com/document/d/1peiWOkWUts--Tyky6sdLQxrcA5OO2d0A1LmWSwPfFXA/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1peiWOkWUts--Tyky6sdLQxrcA5OO2d0A1LmWSwPfFXA/edit"}]}, {"id": "93430356", "title": "Felix's notes for 2 Nov 2025", "date": "2025-11-02", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-2-nov-2025", "postText": "https://docs.google.com/document/d/1URFGkAGSgHEHQEgSP9Cvyk0L6M6XyIRMiVcATmIEnfU/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1URFGkAGSgHEHQEgSP9Cvyk0L6M6XyIRMiVcATmIEnfU/edit"}]}, {"id": "93098152", "title": "Felix's notes for 26 Oct 2025", "date": "2025-10-26", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-26-oct-2025", "postText": "https://docs.google.com/document/d/1uWKvIXeqBtushC7p3KhonQOnf43L-6Foj0OJU3cMRMw/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1uWKvIXeqBtushC7p3KhonQOnf43L-6Foj0OJU3cMRMw/edit"}]}, {"id": "92754681", "title": "Felix's notes for 19 Oct 2025", "date": "2025-10-19", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-19-oct-2025", "postText": "https://docs.google.com/document/d/1w6GQC1c6EY3gJyxV2EABwnRV4_4poHqTuPS-1m8xBvA/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1w6GQC1c6EY3gJyxV2EABwnRV4_4poHqTuPS-1m8xBvA/edit"}]}, {"id": "92454327", "title": "Quick notes for 14 Oct 2025", "date": "2025-10-14", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-quick-notes-for-14-oct-2025", "postText": "Quick update: \n\nTo call this market action \"whippy\" and \"volatile\" is a huge understatement! The past three days clearly show the intensity we're facing. \nOn Friday, the Dow dropped close to 900 points, then yesterday it surged nearly 600 points, and today it added over 200 more. \nLooking at the intraday movement, the hour-by-hour swings are astonishing—down over 600 points early on, followed by a sharp \"U-turn\" that erased the loss and pushed gains past 450 points before weakening again, ending with a 203-point rise. \nThis erratic behavior reinforces our ongoing thesis. It highlights why we emphasize not fixating on wild index swings, instead focusing more on industry trends. \nOur Diversified Metals and Uranium picks, as well as Solar recommendations, are still performing well, with some continuing to rocket higher. \nMeanwhile, as expected, most \"Magnificent 7\" stocks are underperforming, and Semiconductor issues, though bullish long-term, are now dragging short-term. \nThis market truly reflects \"good is good, and bad is bad,\" aligning with our industry  strategy!", "body": "Quick update: \n\nTo call this market action \"whippy\" and \"volatile\" is a huge understatement! The past three days clearly show the intensity we're facing. \nOn Friday, the Dow dropped close to 900 points, then yesterday it surged nearly 600 points, and today it added over 200 more. \nLooking at the intraday movement, the hour-by-hour swings are astonishing—down over 600 points early on, followed by a sharp \"U-turn\" that erased the loss and pushed gains past 450 points before weakening again, ending with a 203-point rise. \nThis erratic behavior reinforces our ongoing thesis. It highlights why we emphasize not fixating on wild index swings, instead focusing more on industry trends. \nOur Diversified Metals and Uranium picks, as well as Solar recommendations, are still performing well, with some continuing to rocket higher. \nMeanwhile, as expected, most \"Magnificent 7\" stocks are underperforming, and Semiconductor issues, though bullish long-term, are now dragging short-term. \nThis market truly reflects \"good is good, and bad is bad,\" aligning with our industry  strategy!", "words": 165, "teaser": "Quick update: To call this market action \"whippy\" and \"volatile\" is a huge understatement! The past three days clearly show the intensity we're facing. On Friday,…", "kinds": [], "links": []}, {"id": "91746604", "title": "Felix's notes for 13 Oct 2025", "date": "2025-10-13", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-13-oct-2025", "postText": "", "body": null, "words": 0, "teaser": "", "kinds": ["video"], "links": [{"kind": "video", "url": "https://video.mn.co/assets/142529280/felix_notes.mp4"}]}, {"id": "92164779", "title": "Felix's notes for 5 Oct 2025", "date": "2025-10-05", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-5-oct-2025", "postText": "https://docs.google.com/document/d/19rSInKPRpVdEDX6MmSj9wLfyFseIAZbfjaSqcE4G7-M/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/19rSInKPRpVdEDX6MmSj9wLfyFseIAZbfjaSqcE4G7-M/edit"}]}, {"id": "91746602", "title": "Felix's notes for 28 Sep 2025", "date": "2025-09-28", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-28-sep-2025", "postText": "https://docs.google.com/document/d/1xheqKFviKctQ-z66U-OefMv9RV0ktRn3oiV53zslZRE/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1xheqKFviKctQ-z66U-OefMv9RV0ktRn3oiV53zslZRE/edit"}]}, {"id": "91420823", "title": "Felix's notes for 21 Sep 2025", "date": "2025-09-21", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-21-sep-2025", "postText": "https://docs.google.com/document/d/1WdSfqms2dFzYFwe4bODumgi9nY6oDmZDo_yzDOqfFec/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1WdSfqms2dFzYFwe4bODumgi9nY6oDmZDo_yzDOqfFec/edit"}]}, {"id": "91066764", "title": "Felix's notes for 14 Sep 2025", "date": "2025-09-14", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-14-sep-2025", "postText": "https://docs.google.com/document/d/1iCA2CxiuoylxKD3TdVOxf0iIkCNC2AsXEAXa0MVHpJM/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1iCA2CxiuoylxKD3TdVOxf0iIkCNC2AsXEAXa0MVHpJM/edit"}]}, {"id": "90720180", "title": "Felix's notes for 7 Sep  2025", "date": "2025-09-07", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-7-sep-2025", "postText": "https://docs.google.com/document/d/1q3RZ-yrdI82VKIQobUmuYMmPwQAzuWq8Tgkis5jVFRY/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1q3RZ-yrdI82VKIQobUmuYMmPwQAzuWq8Tgkis5jVFRY/edit"}]}, {"id": "90369335", "title": "Felix's notes for 31 Aug 2025", "date": "2025-08-31", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-31-aug-2025", "postText": "https://docs.google.com/document/d/1XAU544ISw_8JKk0VP6D4mL6xw2ezVj5to4L25gWLXO8/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1XAU544ISw_8JKk0VP6D4mL6xw2ezVj5to4L25gWLXO8/edit"}]}, {"id": "90019931", "title": "Felix's notes for 24 Aug 2025", "date": "2025-08-24", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-24-aug-2025", "postText": "https://docs.google.com/document/d/1ndTpKWRK4ozLrSfI8PP6YBVIF251QObzE7OL97mnFyw/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1ndTpKWRK4ozLrSfI8PP6YBVIF251QObzE7OL97mnFyw/edit"}]}, {"id": "89660470", "title": "Felix's notes for 17 Aug 2025", "date": "2025-08-17", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-17-aug-2025", "postText": "https://docs.google.com/document/d/1qKvHD-YI6ssUhQ88Dlx0y48aC2tAxQjL8Gyily3WwQ0/edit?usp=sharing", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1qKvHD-YI6ssUhQ88Dlx0y48aC2tAxQjL8Gyily3WwQ0/edit"}]}, {"id": "89308836", "title": "Felix's notes for 10 Aug 2025", "date": "2025-08-10", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-10-aug-2025", "postText": "https://docs.google.com/document/d/1H81tN5khiOCd0-6xYjf61MXJJrXLDDSU1cFi1hg7PWE/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1H81tN5khiOCd0-6xYjf61MXJJrXLDDSU1cFi1hg7PWE/edit"}]}, {"id": "88946316", "title": "Felix's notes for 3 Aug 2025", "date": "2025-08-03", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-3-aug-2025", "postText": "https://docs.google.com/document/d/1o32wOm2IAhQFNQyNzLcQZg5uksf3VMlLdgES8bs25ac/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1o32wOm2IAhQFNQyNzLcQZg5uksf3VMlLdgES8bs25ac/edit"}]}, {"id": "88591720", "title": "Felix's notes for 27 July 2025", "date": "2025-07-27", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-27-july-2025", "postText": "https://docs.google.com/document/d/1kBRGRArgar74Tf6WXIWiM7jAOs0SGRHLNmEJhOHT3tw/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1kBRGRArgar74Tf6WXIWiM7jAOs0SGRHLNmEJhOHT3tw/edit"}]}, {"id": "88209694", "title": "Felix's notes for 20 July 2025", "date": "2025-07-20", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-20-july-2025", "postText": "https://docs.google.com/document/d/1pg7rUM0YYz13sM6PJfiuyB5jgcpNiXaaqGxxKgFsdcQ/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1pg7rUM0YYz13sM6PJfiuyB5jgcpNiXaaqGxxKgFsdcQ/edit"}]}, {"id": "87850064", "title": "Felix's notes for 13 July 2025", "date": "2025-07-13", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-13-july-2025", "postText": "https://docs.google.com/document/d/1CNN7ZgtfTr-7uEdPxIbs3s3jxiCAGT6t-6cJ1E_DrOw/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1CNN7ZgtfTr-7uEdPxIbs3s3jxiCAGT6t-6cJ1E_DrOw/edit"}]}, {"id": "87499936", "title": "Felix's notes for 06 July 2025", "date": "2025-07-06", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-06-july-2025", "postText": "https://docs.google.com/document/d/13oDsMjMrvWMoZaBA5EanBYsFkzEgIs70EeY3_Nnee0A/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/13oDsMjMrvWMoZaBA5EanBYsFkzEgIs70EeY3_Nnee0A/edit"}]}, {"id": "86171623", "title": "Felix's notes for 29 June 2025", "date": "2025-06-29", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-29-june-2025", "postText": "https://docs.google.com/document/d/1WN3AEn3oOH_uV_yw-0jNhYRvoY-SkM77Wc0QFJXnm3E/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1WN3AEn3oOH_uV_yw-0jNhYRvoY-SkM77Wc0QFJXnm3E/edit"}]}, {"id": "86823977", "title": "Felix's notes for 22 June 2025", "date": "2025-06-22", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-22-june-2025", "postText": "https://docs.google.com/document/d/1E0ve1uP3_oFODjkFpdKWdzweyqc98wsg1I7kWJIR_ys/edit?pli=1&tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1E0ve1uP3_oFODjkFpdKWdzweyqc98wsg1I7kWJIR_ys/edit"}]}, {"id": "86494966", "title": "Felix's notes for 15 June 2025", "date": "2025-06-15", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-15-june-2025", "postText": "https://docs.google.com/document/d/1tqF3jXx0dc8iPkh78TZU3LRFIm4yulGKPz2RNesHO4o/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1tqF3jXx0dc8iPkh78TZU3LRFIm4yulGKPz2RNesHO4o/edit"}]}, {"id": "85851971", "title": "Felix's notes for 09 June 2025", "date": "2025-06-09", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-09-june-2025", "postText": "https://docs.google.com/document/d/1aV5WJz5-eIuTpFCxmCkUay6rytYjV23pwuPBCJA67M8/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1aV5WJz5-eIuTpFCxmCkUay6rytYjV23pwuPBCJA67M8/edit"}]}, {"id": "85415804", "title": "Felix's notes for 01 June 2025", "date": "2025-06-01", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-01-june-2025", "postText": "https://docs.google.com/document/d/1LIRQ1nPOwAxGWA0Gfz1YKt_rWBd2PTvY1-HWR1FcTP0/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1LIRQ1nPOwAxGWA0Gfz1YKt_rWBd2PTvY1-HWR1FcTP0/edit"}]}, {"id": "85080949", "title": "Felix's notes for 26 May 2025", "date": "2025-05-26", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-26-may-2025", "postText": "https://docs.google.com/document/d/1P1nXJ8v2AjPqTGJDryuRW_m5Pw4Iy0yiXFsGYmbm8Fo/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1P1nXJ8v2AjPqTGJDryuRW_m5Pw4Iy0yiXFsGYmbm8Fo/edit"}]}, {"id": "84734361", "title": "Felix's notes for 19 May 2025", "date": "2025-05-19", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-19-may-2025", "postText": "https://docs.google.com/document/d/1BHetUO2j1ilKXqlYIYB_h5zx4MmQunz9P6aiItvxMq4/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1BHetUO2j1ilKXqlYIYB_h5zx4MmQunz9P6aiItvxMq4/edit"}]}, {"id": "84375542", "title": "Felix's notes for 12 May 2025", "date": "2025-05-12", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-12-may-2025", "postText": "https://docs.google.com/document/d/1RNp0JMVw0g0fAv9ajA2SOVxwfJJ0dLI5VpAlxme9nH8/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1RNp0JMVw0g0fAv9ajA2SOVxwfJJ0dLI5VpAlxme9nH8/edit"}]}, {"id": "84018746", "title": "Felix' notes for 05 May 2025", "date": "2025-05-05", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felix-notes-for-05-may-2025", "postText": "https://docs.google.com/document/d/1lujL-2lFF1BjqnyabkFGAWXD3DVFFFWE1-7hVu3K1yA/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1lujL-2lFF1BjqnyabkFGAWXD3DVFFFWE1-7hVu3K1yA/edit"}]}, {"id": "83678784", "title": "Felix' notes for 28 April 2025", "date": "2025-04-28", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felix-notes-for-28-april-2025", "postText": "https://docs.google.com/document/d/1XoOE2aYZV22OVd6vzuTdApdpZgilF4bhQDPgoN98tJE/edit?pli=1&tab=t.0", "body": "Summary of Last Week\n\nIn my opinion, the stock market last week (ending April 25, 2025) delivered a strong rally, continuing its volatile but predictable rhythm. I observed that the market moved higher after the short-term pullback ended on Monday, April 21st, marking the start of the next rally. Most major indexes, including the S&P 500, NASDAQ, Russell 2000, and QQQs, closed above their short-term upside targets (e.g., S&P 500 at 5,500, NASDAQ at 17,205) on Friday, though the Dow lagged, not yet confirming a close above 40,800. I noted signs of \"churning\" in Friday's trading, with modest advance-decline ratios on the NYSE and OTC markets and negative volume figures on the Amex, partly due to a correction in gold stocks. However, positive upside/downside volume on the OTC market suggests strength in speculative and oversold tech stocks. I also saw the CBOE Market Volatility Index (VIX) decline by 1.63 points to 24.81, near its 50-day moving average of 24.98, indicating easing short-term fear. Overall, I believe last week's rally aligns with my expectation of a robust advance, though it's showing early signs of fatigue.\n\nShort-Term Outlook\n\nIn my opinion, the short-term market outlook remains favorable, with the next rally progressing as anticipated. I'm encouraged by the strength of most indexes, which closed above key levels like S&P 500 at 5,500, NASDAQ at 17,205, Russell 2000 at 1,932, and QQQs at 470 on April 25th. However, I'm noting potential weaknesses, as the Dow has not yet closed above 40,800, creating a possible \"negative divergence.\" If the Dow confirms this breakout within 1–2 sessions, I expect further upside momentum. Conversely, if the S&P 500 closes below 5,475, I anticipate a short-term correction starting. I believe any such correction would be \"controlled,\" unlikely to test the April 21st low (~5,100 for the S&P 500) or the April 7th panic lows. Supporting this view, I observed more 52-week highs than lows on the NYSE and OTC markets for three consecutive sessions, and stochastic and MACD indicators remain on buy signals. The VIX at 24.81, while above its 150-day (19.71) and 200-day (19.35) moving averages, suggests manageable volatility. I'm also noting the High Anxiety Index, a 25-day measure of advance-decline differences, which hit 32,562 on April 24th, its highest since November 2022, signaling short-term strength. The Investors Intelligence survey shows bullish advisors at 23.5%, the lowest since December 2008, which I view as a positive contrarian signal. I believe these factors support continued upside testing, though a brief pause may occur soon.\n\nLong-Term Outlook\n\nIn my opinion, the long-term market outlook remains negative, indicating challenges over the coming months. I'm concerned that most major indexes, including the S&P 500 (200-day moving average at 5,747), Dow (42,226), NASDAQ (18,339), Russell 2000 (2,191), and QQQs (491), are trading below their 200-day moving averages, signaling persistent weakness. An exception is the Dow Jones Utility Average, which closed at 1,021, slightly above its 200-day moving average of 1,014, suggesting relative strength in utilities. I also observed that the percentage of NYSE stocks above their 30-week moving averages has fallen to 26.8%, the lowest since November 2023, reflecting broad market deterioration. The NYSE Advance-Decline Line, tracking the difference between advancing and declining stocks, has improved from last summer's lows but remains weak, while the OTC and Amex equivalents, though recovering, are far from positive after hitting 30-year lows. The NYSE Momentum Index, a 200-day average of advance-decline differences, is showing early signs of recovery but contrasts with the OTC Momentum Index, which remains negative at -89, its lowest since December 2023. Despite these concerns, I'm optimistic about gold, which remains in a strong Climbing Pattern, reaching a new high of 3,486 on April 22nd. The HUI Gold BUGS Index hit a 12-year high of 416 on April 21st, though both are extended, with potential support at 3,165–3,190 for gold and 365–370 for the HUI. I believe these metrics highlight a difficult long-term environment, with gold as a notable exception.\n\nBullish Sectors (Dow Jones Industry Indices)\n\nIn my opinion, the following sectors, based on Dow Jones Industry indices, show bullish potential:\n\n  - Electronic Equipment, Instruments & Components\n  - Gold\n  - Health Care Providers & Services\n  - Multi-Utilities\n  - Tobacco\n  - Water Utilities\n  - Crypto\n\nBearish Sectors (Dow Jones Industry Indices)\n\nIn my opinion, the following sectors, based on Dow Jones Industry indices, face bearish conditions:\n\n  - Airlines\n  - Auto Components\n  - Banks\n  - Biotechnology\n  - Building Products\n  - Chemicals\n  - Construction & Engineering\n  - Construction Materials\n  - Consumer Finance\n  - Electrical Equipment\n  - Health Care Equipment & Supplies\n  - Hotels, Restaurants & Leisure\n  - Household Durables\n  - IT Services\n  - Machinery\n  - Media\n  - Oil, Gas & Consumable Fuels\n  - Real Estate Investment Trusts (REITs)\n  - Semiconductors & Semiconductor Equipment\n  - Software\n  - Specialty Retail\n  - Trading Companies & Distributors\n  - Transportation Infrastructure\n\nThis report reflects my opinions based on publicly available data from the weekly update. If you'd like me to clarify any terms or dive deeper into specific metrics, let me know!\n\n### WHAT I AM BUYING\n\nI am planning to set up buy or buy stop orders on the following stocks this morning:\n\n[Felix Buy Orders](https://docs.google.com/spreadsheets/d/1D_-SM_3O64iR9s8ZhmhklZmXGU-Fz9CfV_BJ-4rKU0c/edit?usp=sharing)\n\nRemember the most important rule is to preserve your capital.\n\n### CHARTS", "words": 870, "teaser": "Summary of Last Week In my opinion, the stock market last week ending April 25, 2025 delivered a strong rally, continuing its volatile but predictable rhythm. I…", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1XoOE2aYZV22OVd6vzuTdApdpZgilF4bhQDPgoN98tJE/edit"}]}, {"id": "83437464", "title": "Felix' notes for 23 April 2025", "date": "2025-04-23", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felix-notes-for-23-april-2025", "postText": "https://docs.google.com/document/d/11WAeIfEpGj-88NVYMjFFRTo9RQNK5hYf9fAKHu9Y8_s/edit?tab=t.0", "body": "**Market Update Report: April 22, 2025**\n\n**Summary of the Day**\n\nOn Tuesday, April 22, 2025, the stock market mounted a robust rally, with major indexes—the S&P 500, Dow Jones Industrial Average, NASDAQ Composite, and Russell 2000—closing significantly higher. For the first time in 19 days, the NYSE recorded slightly more stocks hitting new yearly highs than new lows, a shift from recent downward pressure. Trading volume reflected strong participation, with advancing stocks outnumbering decliners and upside volume surpassing downside on the NYSE and OTC markets. The CBOE Market Volatility Index (VIX) declined by 3.25 points to 30.57, suggesting easing short-term market fear, though it remains elevated above its longer-term averages.\n\n**Market Outlook**\n\nThe broader market trend remains bearish, warranting vigilance. Nevertheless, the short-term outlook shows signs of improvement. Yesterday's report noted that the market was approaching a potential low, supported by a sharp reduction in new 52-week lows (from 1,162 on the NYSE and 1,757 OTC at the panic lows to 102 and 202, respectively). Today's rally bolsters the view that the recent downward phase has likely concluded, and a short-term upward movement is now in motion. If key index levels—S&P 500 at 5,500, Dow at 40,800, NASDAQ at 17,205, Russell 2000 at 1,932, and Invesco QQQ Trust at 470—are exceeded in the coming days, this rally could develop into a more substantial intermediate-term advance. However, volatility is expected, and the ascent is unlikely to be uninterrupted.\n\n**Sector Observations**\n\n  - **Bullish Sectors**: Within the Dow Jones Industry indices, stocks in Base Pattern (early recovery) and Climbing Pattern (upward momentum) phases are demonstrating strength. These sectors are poised to capitalize on current oversold conditions, potentially driving near-term gains if the rally persists.\n  - **Bearish Gold Bulls**: Gold-related stocks, as represented by the Dow Jones Precious Metals Index, are anticipated to experience weaker short-term performance. A close below critical levels, such as 50 for the GDX ETF, could accelerate a short-term correction in these stocks. However, such a pullback may set the stage for a future buying opportunity for those monitoring this sector.\n\n**Key Metrics to Monitor**\n\n  - **Market Breadth**: Today's trading showed more advancing stocks than decliners across major exchanges, with higher upside volume on the NYSE and OTC markets. This broad participation is a short-term positive, but its durability remains uncertain.\n  - **Volatility (VIX)**: The VIX's decline is a tentative positive, yet its position above its 50-day, 150-day, and 200-day moving averages underscores ongoing intermediate-term uncertainty. A sustained move below these averages would indicate improving market stability.\n\n*Note: This report reflects my market observations and does not constitute investment advice. Consult a financial professional for personalized guidance.*", "words": 437, "teaser": "Market Update Report: April 22, 2025 Summary of the Day On Tuesday, April 22, 2025, the stock market mounted a robust rally, with major indexes—the S&P 500, Dow…", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/11WAeIfEpGj-88NVYMjFFRTo9RQNK5hYf9fAKHu9Y8_s/edit"}]}, {"id": "83331673", "title": "Felix' notes for 21 April 2025 - Weekly", "date": "2025-04-21", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felix-notes-for-21-april-2025-weekly", "postText": "https://docs.google.com/document/d/1XjDZQ0IgLhzGI1ZrXgfJ61VYvJ2UwlQtw4a7z9SgOH8/edit?usp=sharing", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1XjDZQ0IgLhzGI1ZrXgfJ61VYvJ2UwlQtw4a7z9SgOH8/edit"}]}, {"id": "83315540", "title": "Felix's notes for 14 April 2025 WEEKLY", "date": "2025-04-14", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-14-april-2025-weekly", "postText": "https://docs.google.com/document/d/1hga0Z9GZjuScttsSBp6u3SEf4yyGFzojwbDYNKWl0Gs/edit?tab=t.0", "body": null, "words": 0, "teaser": "", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1hga0Z9GZjuScttsSBp6u3SEf4yyGFzojwbDYNKWl0Gs/edit"}]}, {"id": "83315542", "title": "Felix's notes for 10 April 2025", "date": "2025-04-10", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felixs-notes-for-10-april-2025", "postText": "https://docs.google.com/document/d/1reKCk837nlj9kA4B0SJiCaMoU6odRzmXLvy-JRhUiEA/edit?usp=sharing", "body": "What a day! 2nd biggest Nasdaq rally ever. IMHO Trump needed to put out the fire in the bond market.  See yesterday's note on that story and [What EVERY Investor Needs to Do with Their Money ASAP (Why Trump Flipped!)](https://youtu.be/RJrhJU8jHMU)\n\nThe VIX collapsed. Biggest single day decline ever.  Which is positive, though the actual VIX level is still high - which is a medium term problem.\n\nNote the major indices are all below the 200/150/50 moving averages, so we have some rallying to do to get back to a stable market.\n\nOn a positive side, breadth was good, and there are a lot of short positions, which could help sustain this rally:\n\nI will continue to be disciplined and go slow.  Use this rebound to reduce risk.  Trump says this isn't over yet.  Who am I to question the mighty...", "words": 140, "teaser": "What a day! 2nd biggest Nasdaq rally ever. IMHO Trump needed to put out the fire in the bond market. See yesterday's note on that story and What EVERY Investor…", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1reKCk837nlj9kA4B0SJiCaMoU6odRzmXLvy-JRhUiEA/edit"}]}, {"id": "83315543", "title": "Felix' notes for 9 April 2025", "date": "2025-04-09", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felix-notes-for-9-april-2025", "postText": "https://docs.google.com/document/d/1skZr1ZRiY5qhE8fNavWEtQhyEh2QzZI8yZGC_gVuGVc/edit?usp=sharing", "body": "It's not a good sign that the VIX closed 11% higher yet again.\n\nMore stocks declined than advanced - not a good sign:\n\nSo for now, I will remain defensive.\n\nBut... even defensive stocks are selling off:\n\nI think it was Elliott, who said a few days ago, in a crash correlation goes to 1.  Ie everything falls in a panic.\n\nSometimes the market just tells us, sit on your hands and use this time to hone your skills.\n\nAny itch you have to trade, try it in a paper trading account, and build experience that way.\n\nGreat opportunities will be coming.\n\nRemember the market rewards the patient, not the active.\n\nPS: It seems we are seeing a collapse of what is know as the basis trade.  In short about $1.5T in mostly hedge fund money is in that trade.  As bond yields are rising rapidly it appears this trade is in serious trouble and signals a liquidity crisis.\n\nHere is a primer on the Basis Trade you may hear a lot about in the next few hours:\n\nA basis trade is a strategy where investors, like hedge funds, profit from small price differences between a **bond** (e.g., a U.S. Treasury bond) and a **bond futures contract** (an agreement to buy or sell that bond later at a set price). The \"basis\" is the gap between these two prices. It's a low-risk play because the bond and futures prices are closely linked and tend to converge over time. Here's how it works, step-by-step, followed by what happens if bond prices drop fast:\n\n1.  **Two Prices, One Opportunity**:\n      - The bond has a current market price (the \"cash price\").\n      - The futures contract has a price based on the same bond, reflecting future expectations.\n      - These prices should be close, but they can drift apart due to market conditions, interest rates, or supply/demand.\n2.  **Spotting the Gap**:\n      - If the bond's cash price is lower than the futures price (adjusted for interest rates), the bond is \"cheap.\"\n      - If the futures price is lower than the cash price, the futures are \"cheap.\"\n      - The basis trade exploits this mismatch.\n3.  **The Trade**:\n      - **If the bond is cheap**: Buy the bond and sell the futures. When the futures expire, deliver the bond and profit from the difference.\n      - **If the futures are cheap**: Buy the futures and sell the bond short (borrow and sell it). Later, buy the bond back to deliver and profit.\n      - The profit comes when the prices realign, which they typically do by expiration.\n4.  **Why It Works**:\n      - The bond and futures are mathematically tied (arbitrage ensures convergence).\n      - It's a small, steady profit strategy for big investors with lots of capital.\n\n**What Happens If Bond Prices Rapidly Fall?**\n\nNow, let's say bond prices suddenly plummet-maybe due to rising interest rates (bond prices fall when rates rise), a market panic, or unexpected economic news. This can shake up the basis trade:\n\n  - **Impact on the Trade**:\n      - **If you bought the bond and sold futures**: You're holding a bond that's now worth less. If the futures price doesn't fall as much or as fast, the basis (gap) widens instead of narrowing. You could face a loss if you had to sell the bond early or if the trade doesn't converge as expected by expiration.\n      - **If you bought futures and shorted the bond**: A rapid fall in bond prices is good for your short position (you sell high, buy back lower), but the futures price might not drop in sync. If the futures hold steady or fall less, the basis shifts, and your profit could shrink-or turn into a loss.\n  - **Margin Calls and Leverage**:\n      - Basis trades often use borrowed money (leverage) to amplify small profits. If bond prices crash, the value of your position drops, and lenders might demand more cash (a margin call). If you can't cover it, you're forced to sell at a loss, amplifying the damage.\n      - Example: You bought $1 million in bonds with $100,000 of your own money. If prices fall 10%, your bonds are worth $900,000, and you might owe more than you have.\n  - **Real-World Twist**:\n      - In extreme cases (like a 2008-style crisis), the basis can blow out-meaning the gap grows huge and stays that way for a while. This happened with Treasury basis trades during past market shocks, catching some traders off guard.", "words": 738, "teaser": "It's not a good sign that the VIX closed 11% higher yet again. More stocks declined than advanced - not a good sign: So for now, I will remain defensive. But...…", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1skZr1ZRiY5qhE8fNavWEtQhyEh2QzZI8yZGC_gVuGVc/edit"}]}, {"id": "83315546", "title": "Felix' notes for 7 April 2025", "date": "2025-04-07", "author": "Felix Prehn", "postUrl": "https://friends.goatacademy.org/posts/felixs-weekly-market-notes-felix-notes-for-7-april-2025", "postText": "https://docs.google.com/document/d/1KfHyjh--TmELl7HG0pinqpiPD675lm4_F4oU6oA3BRQ/edit?usp=sharing", "body": "I was planning to set up buy or buy stop orders on the following stocks this morning:\n\nCELH, a soft drink maker, if it closed above 37.65 with a stop at:\n\n  - Trading 32.99\n  - Investing 29.39\n\nFortis, a utility company, if it pulls back to 45 with a stop at\n\n  - Trading 43.99\n  - Investing 42.89\n\nRKT, a mortgage co, it it pulls back close to 14, and more aggressively if it closes above 15.80, with a stop at\n\n  - Trading 13.69\n  - Investing 11.49\n\nDG, consumer staples/retail, if it pulls back to 90-91, with a stop at\n\n  - Trading 84.48\n  - Investing 77.99\n\nWhy? Consumer staples, utilities and mortgages are defensive sectors, and each of these companies is fundamentally sound IMHO and has rare momentum.\n\nAs Asian markets crashed over night, futures are deep red and VIX is on the move up, sitting this day out may be the smartest move.  Remember the 2nd layer of tariffs comes into force on 9 April.  Some people are still hoping for delay on those and may get disappointed.\n\nJudging by the general panic on social media, reports of margin calls at hedge funds, I'd say we are near the bottom of the market, but as this is politics driven, I shall wait for calmer waters.\n\nRemember the most important rule is to preserve your capital.\n\n**CHARTS**", "words": 226, "teaser": "I was planning to set up buy or buy stop orders on the following stocks this morning: CELH, a soft drink maker, if it closed above 37.65 with a stop at: - Trading…", "kinds": ["source_doc"], "links": [{"kind": "source_doc", "url": "https://docs.google.com/document/d/1KfHyjh--TmELl7HG0pinqpiPD675lm4_F4oU6oA3BRQ/edit"}]}], "years": ["2026", "2025"], "linkLabels": {"source_doc": "Original document", "watchlist_sheet": "Watchlist", "article": "Full article", "heartbeat": "Heartbeat Scanner", "video": "Video"}};
+const NOTES = DATA.notes;
+const KEY = "felix-notes-v1";
+const SHORT = { source_doc: "Document", watchlist_sheet: "Watchlist",
+  article: "Article", heartbeat: "Heartbeat", video: "Video" };
+
+const ICON = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6"/></svg>',
+  bookmark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.8-7 10-7 10 7 10 7-3.8 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 13A9 9 0 1111 3a7 7 0 0010 10z"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>',
+};
+
+/* ── state ──────────────────────────────────────────────────────────────── */
+let state = { read: [], bm: [], theme: null };
+try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+const read = new Set(state.read || []);
+const bm = new Set(state.bm || []);
+const save = () => {
+  try {
+    localStorage.setItem(KEY, JSON.stringify({
+      read: [...read], bm: [...bm], theme: state.theme,
+    }));
+  } catch (e) {}
+};
+
+let tab = "all";
+let year = "all";
+let query = "";
+
+/* ── theme ──────────────────────────────────────────────────────────────── */
+const themeBtn = document.getElementById("theme");
+function isDark() {
+  return state.theme ? state.theme === "dark"
+    : matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function paintTheme() {
+  if (state.theme) document.documentElement.setAttribute("data-theme", state.theme);
+  else document.documentElement.removeAttribute("data-theme");
+  themeBtn.innerHTML = isDark() ? ICON.sun : ICON.moon;
+}
+themeBtn.addEventListener("click", () => {
+  state.theme = isDark() ? "light" : "dark";
+  paintTheme(); save();
+});
+paintTheme();
+
+/* ── helpers ────────────────────────────────────────────────────────────── */
+const esc = s => (s ?? "").replace(/[&<>"]/g, c =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+const fmt = d => d ? new Date(d + "T00:00:00Z").toLocaleDateString("en-GB",
+  { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "Undated";
+const fmtLong = d => d ? new Date(d + "T00:00:00Z").toLocaleDateString("en-GB",
+  { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }) : "Undated";
+
+function hl(text, q) {
+  if (!q) return esc(text);
+  const re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+  return esc(text).replace(re, "<mark>$1</mark>");
+}
+
+/* When a note matches on its text rather than its title, show the passage that
+   matched — otherwise the row gives no clue why it is in the results. */
+function matchLine(n, q) {
+  if (!q || n.title.toLowerCase().includes(q.toLowerCase())) return "";
+  const hay = n.body || n.postText || "";
+  const at = hay.toLowerCase().indexOf(q.toLowerCase());
+  if (at < 0) return "";
+  const from = Math.max(0, at - 55);
+  const raw = (from ? "…" : "") + hay.slice(from, at + q.length + 85).replace(/\s+/g, " ").trim() + "…";
+  return `<span class="ctx">${hl(raw, q)}</span>`;
+}
+
+const matches = n => {
+  if (year !== "all" && (n.date || "").slice(0, 4) !== year) return false;
+  if (tab === "unread" && read.has(n.id)) return false;
+  if (tab === "bookmarked" && !bm.has(n.id)) return false;
+  if (!query) return true;
+  const q = query.toLowerCase();
+  return n.title.toLowerCase().includes(q)
+    || (n.body || "").toLowerCase().includes(q)
+    || n.postText.toLowerCase().includes(q);
+};
+
+/* ── carousel ───────────────────────────────────────────────────────────── */
+function renderRail() {
+  document.getElementById("rail").innerHTML = NOTES.slice(0, 5).map((n, i) => `
+    <button class="mag" data-id="${esc(n.id)}">
+      <span class="k">${i === 0 ? '<span class="latest">Newest</span>' : ""}${fmt(n.date)}</span>
+      <h4>${esc(n.title)}</h4>
+      ${n.body ? `<p>${esc(n.teaser)}</p>`
+        : `<span class="kinds">${n.kinds.map(k =>
+            `<i>${esc(SHORT[k] || k)}</i>`).join("")}</span>`}
+      <span class="foot"><span>${read.has(n.id) ? "Read" : "Not read"}</span>
+      <span>${bm.has(n.id) ? "Bookmarked" : ""}</span></span>
+    </button>`).join("");
+}
+
+/* ── years ──────────────────────────────────────────────────────────────── */
+function renderYears() {
+  const all = [["all", "All years"], ...DATA.years.map(y => [y, y])];
+  document.getElementById("years").innerHTML = all.map(([v, label]) => {
+    const n = v === "all" ? NOTES.length
+      : NOTES.filter(x => (x.date || "").slice(0, 4) === v).length;
+    return `<button class="yr" data-year="${v}" aria-pressed="${year === v}">${label} <span style="opacity:.6">${n}</span></button>`;
+  }).join("");
+}
+
+/* ── list ───────────────────────────────────────────────────────────────── */
+function renderList() {
+  const hits = NOTES.filter(matches);
+  const el = document.getElementById("list");
+
+  document.getElementById("listnote").textContent =
+    `${hits.length} of ${NOTES.length} notes shown`;
+
+  if (!hits.length) {
+    el.innerHTML = `<div class="empty"><b>Nothing here yet</b>
+      ${tab === "bookmarked" ? "Bookmark a note with the flag icon and it will appear here."
+        : tab === "unread" ? "You have read everything that matches these filters."
+        : "Try a different search or year."}</div>`;
+    return;
+  }
+
+  const groups = new Map();
+  for (const n of hits) {
+    const y = n.date ? n.date.slice(0, 4) : "Undated";
+    if (!groups.has(y)) groups.set(y, []);
+    groups.get(y).push(n);
+  }
+
+  el.innerHTML = [...groups].map(([y, rows]) => `
+    <div class="ygroup"><b>${y}</b><span>${rows.length} note${rows.length === 1 ? "" : "s"}</span></div>
+    ${rows.map(n => `
+      <div class="row ${read.has(n.id) ? "is-read" : ""}" data-row="${esc(n.id)}">
+        <button class="open" data-id="${esc(n.id)}">
+          <span class="dot">${ICON.check}</span>
+          <span class="d">${fmt(n.date)}</span>
+          <span class="t">${hl(n.title, query)}${matchLine(n, query)}</span>
+        </button>
+        <button class="mark-btn" data-toggle-read="${esc(n.id)}"
+          title="${read.has(n.id) ? "Mark as unread" : "Mark as read"}">${ICON.eye}</button>
+        <button class="bm-btn" data-toggle-bm="${esc(n.id)}" aria-pressed="${bm.has(n.id)}"
+          title="Bookmark">${ICON.bookmark}</button>
+      </div>`).join("")}`).join("");
+}
+
+/* ── counters + sidebar ─────────────────────────────────────────────────── */
+function renderMeta() {
+  const total = NOTES.length;
+  const nRead = NOTES.filter(n => read.has(n.id)).length;
+  const pct = total ? Math.round((nRead / total) * 100) : 0;
+
+  document.getElementById("pct").textContent = pct + "%";
+  document.getElementById("bigpct").textContent = pct + "%";
+  document.getElementById("bigsub").textContent = `${nRead} of ${total} notes read`;
+  document.getElementById("c-all").textContent = total;
+  document.getElementById("c-unread").textContent = total - nRead;
+  document.getElementById("c-bm").textContent = bm.size;
+  document.getElementById("edition").textContent = total + " notes";
+
+  document.getElementById("bars").innerHTML = DATA.years.slice().reverse().map(y => {
+    const inYear = NOTES.filter(n => (n.date || "").slice(0, 4) === y);
+    const done = inYear.filter(n => read.has(n.id)).length;
+    const cls = done === inYear.length ? "done" : done > 0 ? "on" : "";
+    return `<div class="${done > 0 && done < inYear.length ? "cur" : ""}">
+      <i class="${cls}"></i><em>${y}</em></div>`;
+  }).join("");
+
+  const next = NOTES.find(n => !read.has(n.id));
+  const up = document.getElementById("nextup");
+  if (next) {
+    up.dataset.id = next.id;
+    up.innerHTML = `<span class="eyebrow">Note</span><h4>${esc(next.title)}</h4>
+      <p>${fmtLong(next.date)}</p><span class="go">Read it &rarr;</span>`;
+    up.style.display = "";
+  } else {
+    up.style.display = "none";
+  }
+}
+
+/* ── detail ─────────────────────────────────────────────────────────────── */
+const sheet = document.getElementById("sheet");
+let openId = null;
+
+function paintSheetBm() {
+  const btn = document.getElementById("s-bm");
+  btn.innerHTML = ICON.bookmark;
+  btn.setAttribute("aria-pressed", bm.has(openId));
+}
+
+function openNote(id) {
+  const n = NOTES.find(x => x.id === id);
+  if (!n) return;
+  openId = id;
+
+  document.getElementById("s-date").textContent = fmtLong(n.date);
+  document.getElementById("s-title").textContent = n.title;
+  document.getElementById("s-by").textContent =
+    n.author + (n.words ? ` · ${n.words.toLocaleString()} words` : "");
+  paintSheetBm();
+
+  const links = n.links.map(l =>
+    `<li><a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${
+      esc(DATA.linkLabels[l.kind] || "Link")} &rarr;</a></li>`).join("");
+
+  document.getElementById("s-body").innerHTML = [
+    n.body ? `<div class="prose">${esc(n.body)}</div>`
+           : (n.postText ? `<div class="prose">${esc(n.postText)}</div>` : ""),
+    links ? `<div class="srcbox"><h5>Original sources</h5><ul>${links}</ul></div>` : "",
+    n.postUrl ? `<div class="srcbox"><h5>In the community</h5><ul><li>
+        <a href="${esc(n.postUrl)}" target="_blank" rel="noopener noreferrer">Open the original post &rarr;</a>
+      </li></ul></div>` : "",
+  ].join("");
+
+  document.getElementById("s-body").scrollTop = 0;
+  sheet.showModal();
+
+  if (!read.has(id)) { read.add(id); save(); refresh(); }
+}
+
+/* ── wiring ─────────────────────────────────────────────────────────────── */
+function refresh() { renderRail(); renderList(); renderMeta(); }
+
+document.addEventListener("click", e => {
+  const openBtn = e.target.closest("[data-id]");
+  const readBtn = e.target.closest("[data-toggle-read]");
+  const bmBtn = e.target.closest("[data-toggle-bm]");
+  const yrBtn = e.target.closest("[data-year]");
+  const tabBtn = e.target.closest("[data-tab]");
+
+  if (readBtn) {
+    const id = readBtn.dataset.toggleRead;
+    read.has(id) ? read.delete(id) : read.add(id);
+    save(); refresh(); return;
+  }
+  if (bmBtn) {
+    const id = bmBtn.dataset.toggleBm;
+    bm.has(id) ? bm.delete(id) : bm.add(id);
+    save(); refresh(); return;
+  }
+  if (yrBtn) {
+    year = yrBtn.dataset.year;
+    renderYears(); renderList(); return;
+  }
+  if (tabBtn) {
+    tab = tabBtn.dataset.tab;
+    document.querySelectorAll("[data-tab]").forEach(b =>
+      b.setAttribute("aria-selected", b.dataset.tab === tab));
+    renderList(); return;
+  }
+  if (openBtn && openBtn.dataset.id) openNote(openBtn.dataset.id);
+});
+
+document.getElementById("s-bm").addEventListener("click", () => {
+  if (!openId) return;
+  bm.has(openId) ? bm.delete(openId) : bm.add(openId);
+  save(); paintSheetBm(); refresh();
+});
+document.getElementById("s-close").addEventListener("click", () => sheet.close());
+sheet.addEventListener("click", e => {
+  const box = sheet.querySelector(".sheet").getBoundingClientRect();
+  if (e.clientY < box.top || e.clientY > box.bottom
+   || e.clientX < box.left || e.clientX > box.right) sheet.close();
+});
+
+let t;
+document.getElementById("q").addEventListener("input", e => {
+  clearTimeout(t);
+  const v = e.target.value;
+  t = setTimeout(() => { query = v.trim(); renderList(); }, 120);
+});
+
+renderYears();
+refresh();
+</script>
+
+</html>

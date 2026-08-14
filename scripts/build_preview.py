@@ -19,7 +19,7 @@ import re
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 INDEX = ROOT / "data" / "notes_index.json"
 DOCS = ROOT / "data" / "raw" / "docs"
-OUT = ROOT / "preview" / "index.html"
+OUT = ROOT / "index.html"
 
 LINK_LABELS = {
     "source_doc": "Original document",
@@ -816,11 +816,30 @@ refresh();
 """
 
 
+# Standalone wrapper for hosting (Vercel). The Artifact publisher supplies its
+# own document skeleton, so it gets the bare fragment instead.
+SHELL = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Felix's weekly market notes for GOAT Academy — searchable archive.">
+{body}
+</html>
+"""
+
+
 def main() -> int:
     payload = collect()
     html = HTML.replace("__DATA__", json.dumps(payload, ensure_ascii=False))
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(html)
+    OUT.write_text(SHELL.format(body=html))
+
+    # Fragment for the Artifact preview, which adds its own <head>/<body>.
+    fragment = ROOT / "preview" / "index.html"
+    fragment.parent.mkdir(parents=True, exist_ok=True)
+    fragment.write_text(html)
 
     with_body = [n for n in payload["notes"] if n["body"]]
     print(f"notes:      {len(payload['notes'])} weekly ({len(with_body)} with full text)")
