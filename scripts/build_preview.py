@@ -111,9 +111,9 @@ PAGE = r"""<title>Felix's Notes Archive</title>
   --mark: #ade5f5;
   --shadow: 0 1px 3px rgba(12, 28, 36, .08);
 
+  /* One clean sans throughout — the serif was harder on the eye at length. */
   --ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
         "Helvetica Neue", Arial, sans-serif;
-  --read: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -208,7 +208,7 @@ button { font: inherit; cursor: pointer; }
 .card:hover { transform: translateY(-3px); border-color: var(--brand-2); }
 .card .when { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-2); }
 .card h3 { margin: .5rem 0 .45rem; font-size: 1.03rem; font-weight: 750; line-height: 1.3; letter-spacing: -.01em; }
-.card p { margin: 0; font-family: var(--read); font-size: .88rem; line-height: 1.5; color: var(--ink-2);
+.card p { margin: 0; font-size: .89rem; line-height: 1.52; color: var(--ink-2);
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* ── filters ────────────────────────────────────────────────────────────── */
@@ -251,7 +251,7 @@ button { font: inherit; cursor: pointer; }
 .d { flex: none; width: 6.6rem; font-size: .83rem; font-weight: 700; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .t { flex: 1; min-width: 0; font-size: .98rem; font-weight: 700; letter-spacing: -.005em; }
 .is-read .t { font-weight: 500; color: var(--ink-2); }
-.ctx { display: block; margin-top: .18rem; font-family: var(--read); font-size: .85rem; font-weight: 400; line-height: 1.45; color: var(--ink-3); }
+.ctx { display: block; margin-top: .18rem; font-size: .85rem; font-weight: 400; line-height: 1.45; color: var(--ink-3); }
 
 .save {
   flex: none; margin-right: .9rem; display: inline-flex; align-items: center; gap: .35rem;
@@ -282,12 +282,22 @@ dialog::backdrop { background: rgba(6,16,22,.6); }
 .x svg { width: 17px; height: 17px; }
 .x:hover { color: var(--brand-2); border-color: var(--brand-2); }
 .sheet-b { padding: 1.3rem 1.6rem 1.7rem; overflow-y: auto; }
-.prose { font-family: var(--read); font-size: 1.02rem; line-height: 1.68; white-space: pre-wrap; overflow-wrap: break-word; margin: 0 0 1.3rem; }
-.links { padding: 1rem 1.15rem; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); margin-bottom: .8rem; }
-.links h4 { margin: 0 0 .6rem; font-size: .69rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-.links ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .45rem; }
-.links a { color: var(--brand-2); font-size: .93rem; font-weight: 650; text-decoration: none; }
-.links a:hover { text-decoration: underline; }
+.prose {
+  font-size: 1.06rem; line-height: 1.78; letter-spacing: .002em;
+  white-space: pre-wrap; overflow-wrap: break-word; margin: 0 0 1.4rem;
+  color: var(--ink);
+}
+.prose a { color: var(--brand-2); font-weight: 600; overflow-wrap: anywhere; }
+.mynote { padding: 1rem 1.15rem; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); }
+.mynote h4 { margin: 0 0 .55rem; font-size: .69rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.mynote textarea {
+  width: 100%; min-height: 5.5rem; resize: vertical; padding: .7rem .85rem;
+  border-radius: 9px; border: 1px solid var(--line); background: var(--panel);
+  color: var(--ink); font: inherit; font-size: .95rem; line-height: 1.6;
+}
+.mynote textarea:focus { outline: 2px solid var(--brand-2); outline-offset: -1px; }
+.mynote .saved-tick { margin: .4rem 0 0; font-size: .76rem; font-weight: 650; color: var(--green); opacity: 0; transition: opacity .2s; }
+.mynote .saved-tick.on { opacity: 1; }
 mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 .12em; }
 
 footer { margin-top: 2.5rem; padding: 1.5rem 0 2.5rem; border-top: 1px solid var(--line); color: var(--ink-3); font-size: .82rem; }
@@ -360,11 +370,21 @@ footer p { margin: 0; }
       <h2 id="s-title"></h2>
       <p id="s-by"></p>
     </div>
-    <button class="x" id="s-close" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
+    <div style="display:flex;gap:.5rem;flex:none">
+      <button class="save" id="s-save" aria-pressed="false" style="margin:0" title="Save this note"></button>
+      <button class="x" id="s-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
   </div>
-  <div class="sheet-b" id="s-body"></div>
+  <div class="sheet-b">
+    <div id="s-text"></div>
+    <div class="mynote">
+      <h4>My note</h4>
+      <textarea id="s-mynote" placeholder="Why is this one worth remembering?"></textarea>
+      <p class="saved-tick" id="s-tick">Saved</p>
+    </div>
+  </div>
 </div></dialog>
 
 <script>
@@ -379,13 +399,15 @@ const ICON = {
   sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>',
 };
 
-let state = { read: [], bm: [], theme: null };
+let state = { read: [], bm: [], theme: null, mine: {} };
 try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
 const read = new Set(state.read || []);
 const bm = new Set(state.bm || []);
+const mine = state.mine && typeof state.mine === "object" ? state.mine : {};
 const save = () => {
   try {
-    localStorage.setItem(KEY, JSON.stringify({ read: [...read], bm: [...bm], theme: state.theme }));
+    localStorage.setItem(KEY, JSON.stringify(
+      { read: [...read], bm: [...bm], theme: state.theme, mine }));
   } catch (e) {}
 };
 
@@ -423,6 +445,16 @@ function hl(text, q) {
   if (!q) return esc(text);
   const re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
   return esc(text).replace(re, "<mark>$1</mark>");
+}
+
+/* The note text carries its links inline as plain URLs, so turn them into
+   real links rather than listing them separately. */
+function linkify(text) {
+  return esc(text).replace(/https?:\/\/[^\s<]+/g, raw => {
+    const url = raw.replace(/[.,;:)\]]+$/, "");
+    const tail = raw.slice(url.length);
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>${tail}`;
+  });
 }
 
 /* When a note matches on its text rather than its title, show the passage that
@@ -509,27 +541,31 @@ function renderList() {
 /* ── detail ─────────────────────────────────────────────────────────────── */
 const sheet = document.getElementById("sheet");
 
+let openId = null;
+
+function paintSheetSave() {
+  const btn = document.getElementById("s-save");
+  btn.innerHTML = ICON.bookmark + (bm.has(openId) ? "Saved" : "Save");
+  btn.setAttribute("aria-pressed", bm.has(openId));
+}
+
 function openNote(id) {
   const n = NOTES.find(x => x.id === id);
   if (!n) return;
+  openId = id;
 
   document.getElementById("s-when").textContent = fmtLong(n.date);
   document.getElementById("s-title").textContent = n.title;
   document.getElementById("s-by").textContent = n.author;
+  paintSheetSave();
 
-  const links = n.links.map(l =>
-    `<li><a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${
-      esc(DATA.linkLabels[l.kind] || "Link")} &rarr;</a></li>`).join("");
+  const text = n.body || n.text || "";
+  document.getElementById("s-text").innerHTML =
+    text ? `<div class="prose">${linkify(text)}</div>` : "";
 
-  document.getElementById("s-body").innerHTML = [
-    (n.body || n.text) ? `<div class="prose">${esc(n.body || n.text)}</div>` : "",
-    links ? `<div class="links"><h4>Links</h4><ul>${links}</ul></div>` : "",
-    n.postUrl ? `<div class="links"><h4>In the community</h4><ul><li>
-      <a href="${esc(n.postUrl)}" target="_blank" rel="noopener noreferrer">Open the original post &rarr;</a>
-      </li></ul></div>` : "",
-  ].join("");
-
-  document.getElementById("s-body").scrollTop = 0;
+  document.getElementById("s-mynote").value = mine[id] || "";
+  document.getElementById("s-tick").classList.remove("on");
+  document.querySelector(".sheet-b").scrollTop = 0;
   sheet.showModal();
 
   if (!read.has(id)) { read.add(id); save(); refresh(); }
@@ -566,6 +602,27 @@ document.getElementById("bmfilter").addEventListener("click", () => {
 document.getElementById("year").addEventListener("change", e => {
   year = e.target.value;
   renderList();
+});
+
+document.getElementById("s-save").addEventListener("click", () => {
+  if (!openId) return;
+  bm.has(openId) ? bm.delete(openId) : bm.add(openId);
+  save(); paintSheetSave(); refresh();
+});
+
+let noteTimer;
+document.getElementById("s-mynote").addEventListener("input", e => {
+  if (!openId) return;
+  const value = e.target.value;
+  clearTimeout(noteTimer);
+  noteTimer = setTimeout(() => {
+    if (value.trim()) mine[openId] = value;
+    else delete mine[openId];
+    save();
+    const tick = document.getElementById("s-tick");
+    tick.classList.add("on");
+    setTimeout(() => tick.classList.remove("on"), 1400);
+  }, 400);
 });
 
 document.getElementById("s-close").addEventListener("click", () => sheet.close());
