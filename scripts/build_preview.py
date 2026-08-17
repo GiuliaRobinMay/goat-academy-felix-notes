@@ -81,6 +81,7 @@ def collect() -> dict:
             "text": text,
             "body": body,
             "recap": recap(body or text),
+            "line": recap(body or text, 118),
             "links": links,
         })
 
@@ -95,21 +96,24 @@ PAGE = r"""<title>Felix's Notes Archive</title>
 /* Light theme is tinted toward the brand teal rather than plain white, so
    borders and panels actually read as structure. */
 :root {
-  --bg: #eef5f9;
+  --bg: #f0f5f8;
   --panel: #ffffff;
-  --panel-2: #e7f1f7;
-  --line: #b6d5e5;
-  --line-soft: #d3e6ef;
-  --ink: #0c1c24;
-  --ink-2: #3b5964;
-  --ink-3: #5e7f8c;
+  --panel-2: #e8f0f5;
+  --line: #d3e2ea;
+  --line-strong: #b2cddb;
+  --ink: #08181f;
+  --ink-2: #3d5b67;
+  --ink-3: #6a8794;
 
-  --brand: #0f6ba6;
-  --brand-2: #12809c;
+  --brand: #0d6a9e;
+  --brand-2: #0f7f9b;
+  --new: #0f7f9b;
   --green: #17914c;
-  --gold: #a8720c;
-  --mark: #ade5f5;
-  --shadow: 0 1px 3px rgba(12, 28, 36, .08);
+  --gold: #9a6a0b;
+  --mark: #a8e3f4;
+  --shadow: 0 1px 2px rgba(8, 24, 31, .05);
+  --shadow-lift: 0 10px 28px -12px rgba(8, 24, 31, .28);
+  --lead-tint: linear-gradient(140deg, #f4fafc 0%, #e7f2f7 100%);
 
   /* One clean sans throughout — the serif was harder on the eye at length. */
   --ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
@@ -117,39 +121,45 @@ PAGE = r"""<title>Felix's Notes Archive</title>
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #080a0b;
-    --panel: #121517;
-    --panel-2: #181f23;
-    --line: #2a353b;
-    --line-soft: #1f272b;
-    --ink: #f2f6f8;
-    --ink-2: #a8b4bb;
-    --ink-3: #7b8b93;
+    --bg: #07090a;
+    --panel: #101416;
+    --panel-2: #171d21;
+    --line: #242e33;
+    --line-strong: #33424a;
+    --ink: #f1f6f8;
+    --ink-2: #a4b2b9;
+    --ink-3: #75858d;
 
     --brand: #2fa8e0;
-    --brand-2: #35b1e8;
+    --brand-2: #38b8dd;
+    --new: #38b8dd;
     --green: #3ddc84;
-    --gold: #e0b44c;
-    --mark: #12455c;
-    --shadow: 0 1px 3px rgba(0, 0, 0, .45);
+    --gold: #d8a949;
+    --mark: #0f4257;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .5);
+    --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
+    --lead-tint: linear-gradient(140deg, #141b1f 0%, #0e1416 100%);
   }
 }
 :root[data-theme="dark"] {
-  --bg: #080a0b;
-  --panel: #121517;
-  --panel-2: #181f23;
-  --line: #2a353b;
-  --line-soft: #1f272b;
-  --ink: #f2f6f8;
-  --ink-2: #a8b4bb;
-  --ink-3: #7b8b93;
+  --bg: #07090a;
+  --panel: #101416;
+  --panel-2: #171d21;
+  --line: #242e33;
+  --line-strong: #33424a;
+  --ink: #f1f6f8;
+  --ink-2: #a4b2b9;
+  --ink-3: #75858d;
 
   --brand: #2fa8e0;
-  --brand-2: #35b1e8;
+  --brand-2: #38b8dd;
+  --new: #38b8dd;
   --green: #3ddc84;
-  --gold: #e0b44c;
-  --mark: #12455c;
-  --shadow: 0 1px 3px rgba(0, 0, 0, .45);
+  --gold: #d8a949;
+  --mark: #0f4257;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .5);
+  --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
+  --lead-tint: linear-gradient(140deg, #141b1f 0%, #0e1416 100%);
 }
 
 * { box-sizing: border-box; }
@@ -195,21 +205,51 @@ button { font: inherit; cursor: pointer; }
 .sec h2 { margin: 0; font-size: 1.15rem; font-weight: 800; letter-spacing: -.01em; }
 .sec p { margin: 0; font-size: .86rem; color: var(--ink-3); }
 
-/* ── latest cards ───────────────────────────────────────────────────────── */
-.rail { display: flex; gap: .9rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: .2rem .2rem 1rem; margin: 0 -.2rem; }
-.rail::-webkit-scrollbar { height: 8px; }
-.rail::-webkit-scrollbar-thumb { background: var(--line); border-radius: 99px; }
-.card {
-  flex: 0 0 17.5rem; scroll-snap-align: start; text-align: left;
-  padding: 1.1rem 1.2rem; border-radius: 14px; background: var(--panel);
-  border: 1px solid var(--line); box-shadow: var(--shadow); color: inherit;
-  transition: transform .14s ease, border-color .14s ease;
+/* ── latest: one lead note, four stacked beside it ─────────────────────── */
+/* Equal-weight cards gave the eye nothing to land on. A dominant lead with a
+   secondary column is how a front page carries hierarchy. */
+.latest { display: grid; grid-template-columns: 1.55fr 1fr; gap: 1.1rem; align-items: stretch; }
+@media (max-width: 52rem) { .latest { grid-template-columns: 1fr; } }
+
+.lead {
+  display: flex; flex-direction: column; text-align: left; color: inherit;
+  padding: 1.7rem 1.8rem; border-radius: 18px; background: var(--lead-tint);
+  border: 1px solid var(--line); box-shadow: var(--shadow);
+  transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
 }
-.card:hover { transform: translateY(-3px); border-color: var(--brand-2); }
-.card .when { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-2); }
-.card h3 { margin: .5rem 0 .45rem; font-size: 1.03rem; font-weight: 750; line-height: 1.3; letter-spacing: -.01em; }
-.card p { margin: 0; font-size: .89rem; line-height: 1.52; color: var(--ink-2);
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.lead:hover { border-color: var(--line-strong); box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+.kicker {
+  display: inline-flex; align-items: center; gap: .5rem; font-size: .69rem;
+  font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--brand-2);
+}
+.kicker::before { content: ""; width: 1.6rem; height: 2px; background: currentColor; border-radius: 2px; }
+.lead h3 {
+  margin: .85rem 0 .6rem; font-size: clamp(1.35rem, 2.5vw, 1.72rem); font-weight: 800;
+  line-height: 1.18; letter-spacing: -.024em; text-wrap: balance;
+}
+.lead p { margin: 0; font-size: .96rem; line-height: 1.62; color: var(--ink-2);
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.lead .go {
+  margin-top: auto; padding-top: 1.1rem; font-size: .8rem; font-weight: 750;
+  letter-spacing: .04em; color: var(--brand); display: inline-flex; align-items: center; gap: .4rem;
+}
+.lead:hover .go { gap: .6rem; }
+
+.stack { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
+.stack-h {
+  padding: .8rem 1.15rem; border-bottom: 1px solid var(--line); background: var(--panel-2);
+  font-size: .67rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+}
+.mini {
+  flex: 1; display: flex; flex-direction: column; justify-content: center; gap: .22rem;
+  padding: .8rem 1.15rem; text-align: left; background: none; border: 0;
+  border-bottom: 1px solid var(--line); color: inherit;
+}
+.mini:last-child { border-bottom: 0; }
+.mini:hover { background: var(--panel-2); }
+.mini .when { font-size: .69rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.mini h4 { margin: 0; font-size: .92rem; font-weight: 700; line-height: 1.32; letter-spacing: -.01em;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* ── filters ────────────────────────────────────────────────────────────── */
 .filters { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1rem; }
@@ -230,40 +270,59 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* ── list ───────────────────────────────────────────────────────────────── */
-.list { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
-.ygroup { display: flex; align-items: baseline; gap: .7rem; padding: .75rem 1.2rem; background: var(--panel-2); border-bottom: 1px solid var(--line); }
-.ygroup b { font-size: 1.3rem; font-weight: 800; letter-spacing: -.02em; }
-.ygroup span { font-size: .74rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); }
-.row { display: flex; align-items: center; gap: .3rem; padding-left: .5rem; border-bottom: 1px solid var(--line-soft); }
+.list { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); }
+.ygroup {
+  display: flex; align-items: baseline; gap: .75rem; padding: .85rem 1.3rem;
+  background: var(--panel-2); border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 2;
+}
+.ygroup b { font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; }
+.ygroup span { font-size: .7rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+
+.row { display: flex; align-items: flex-start; gap: .3rem; padding-left: .55rem; border-bottom: 1px solid var(--line); }
 .row:last-child { border-bottom: 0; }
 .row:hover { background: var(--panel-2); }
 
 /* A checkbox, because it is the control that marks a note read — a bare icon
    here gave no clue what it did. */
-.readbox { flex: none; width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 0; padding: 0; }
-.box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; background: var(--panel); }
+.readbox { flex: none; width: 44px; height: 44px; margin-top: .55rem; display: grid; place-items: center; background: none; border: 0; padding: 0; }
+.box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line-strong); display: grid; place-items: center; background: var(--panel); transition: border-color .15s, background .15s; }
 .box svg { width: 12px; height: 12px; color: #fff; opacity: 0; }
 .readbox:hover .box { border-color: var(--green); }
 .is-read .box { background: var(--green); border-color: var(--green); }
 .is-read .box svg { opacity: 1; }
 
-.open { flex: 1; min-width: 0; display: flex; align-items: center; gap: .9rem; padding: .8rem .3rem; background: none; border: 0; color: inherit; text-align: left; }
-.d { flex: none; width: 6.6rem; font-size: .83rem; font-weight: 700; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.t { flex: 1; min-width: 0; font-size: .98rem; font-weight: 700; letter-spacing: -.005em; }
-.is-read .t { font-weight: 500; color: var(--ink-2); }
-.ctx { display: block; margin-top: .18rem; font-size: .85rem; font-weight: 400; line-height: 1.45; color: var(--ink-3); }
+.open { flex: 1; min-width: 0; display: flex; gap: 1rem; padding: .95rem .3rem; background: none; border: 0; color: inherit; text-align: left; }
+.d {
+  flex: none; width: 5.6rem; padding-top: .12rem; font-size: .78rem; font-weight: 750;
+  color: var(--ink-3); font-variant-numeric: tabular-nums; letter-spacing: .01em;
+}
+.body { flex: 1; min-width: 0; }
+.t { display: block; font-size: 1rem; font-weight: 700; line-height: 1.35; letter-spacing: -.012em; }
+.is-read .t { font-weight: 550; color: var(--ink-2); }
+.line {
+  display: block; margin-top: .22rem; font-size: .875rem; line-height: 1.5; color: var(--ink-3);
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ctx { display: block; margin-top: .3rem; font-size: .855rem; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
+
+/* Unread marker, the way a reader app signals what is new. */
+.newdot { flex: none; width: 7px; height: 7px; margin: 1.15rem .1rem 0 0; border-radius: 999px; background: var(--new); }
+.is-read .newdot { background: transparent; }
 
 .save {
-  flex: none; margin-right: .9rem; display: inline-flex; align-items: center; gap: .35rem;
-  padding: .36rem .72rem; border-radius: 8px; background: var(--panel-2);
-  border: 1px solid var(--line); color: var(--ink-2); font-size: .78rem; font-weight: 700;
+  flex: none; margin: .75rem .9rem 0 0; display: inline-flex; align-items: center; gap: .35rem;
+  padding: .36rem .72rem; border-radius: 8px; background: transparent;
+  border: 1px solid var(--line-strong); color: var(--ink-3); font-size: .76rem; font-weight: 700;
+  opacity: .5; transition: opacity .15s, color .15s, border-color .15s;
 }
+.row:hover .save { opacity: 1; }
 .save svg { width: 14px; height: 14px; }
-.save:hover { border-color: var(--gold); color: var(--gold); }
-.save[aria-pressed="true"] { color: var(--gold); border-color: var(--gold); background: transparent; }
+.save:hover { border-color: var(--gold); color: var(--gold); opacity: 1; }
+.save[aria-pressed="true"] { color: var(--gold); border-color: var(--gold); opacity: 1; }
 .save[aria-pressed="true"] svg { fill: currentColor; }
 
-.empty { padding: 3.2rem 1.5rem; text-align: center; color: var(--ink-3); }
+.empty { padding: 3.4rem 1.5rem; text-align: center; color: var(--ink-3); }
 .empty b { display: block; margin-bottom: .3rem; color: var(--ink); font-size: 1.05rem; }
 
 /* ── dialog ─────────────────────────────────────────────────────────────── */
@@ -340,7 +399,7 @@ footer p { margin: 0; }
     <h2>Latest notes</h2>
     <p>The five most recent</p>
   </div>
-  <div class="rail" id="rail"></div>
+  <div class="latest" id="latest"></div>
 
   <div class="sec">
     <h2>All notes</h2>
@@ -479,14 +538,26 @@ const matches = n => {
     || n.text.toLowerCase().includes(q);
 };
 
-/* ── latest cards ───────────────────────────────────────────────────────── */
-function renderRail() {
-  document.getElementById("rail").innerHTML = NOTES.slice(0, 5).map(n => `
-    <button class="card" data-id="${esc(n.id)}">
-      <span class="when">${fmt(n.date)}</span>
-      <h3>${esc(n.title)}</h3>
-      <p>${esc(n.recap)}</p>
-    </button>`).join("");
+/* ── latest ─────────────────────────────────────────────────────────────── */
+function renderLatest() {
+  const [lead, ...rest] = NOTES.slice(0, 5);
+  if (!lead) { document.getElementById("latest").innerHTML = ""; return; }
+
+  document.getElementById("latest").innerHTML = `
+    <button class="lead" data-id="${esc(lead.id)}">
+      <span class="kicker">Newest &middot; ${fmt(lead.date)}</span>
+      <h3>${esc(lead.title)}</h3>
+      <p>${esc(lead.recap)}</p>
+      <span class="go">Read the note &rarr;</span>
+    </button>
+    <div class="stack">
+      <div class="stack-h">Also recent</div>
+      ${rest.map(n => `
+        <button class="mini" data-id="${esc(n.id)}">
+          <span class="when">${fmt(n.date)}</span>
+          <h4>${esc(n.title)}</h4>
+        </button>`).join("")}
+    </div>`;
 }
 
 /* ── year dropdown ──────────────────────────────────────────────────────── */
@@ -529,9 +600,13 @@ function renderList() {
           aria-checked="${read.has(n.id)}"
           title="${read.has(n.id) ? "Mark as unread" : "Mark as read"}">
           <span class="box">${ICON.check}</span></button>
+        <span class="newdot" aria-hidden="true"></span>
         <button class="open" data-id="${esc(n.id)}">
           <span class="d">${fmt(n.date)}</span>
-          <span class="t">${hl(n.title, query)}${matchLine(n, query)}</span>
+          <span class="body">
+            <span class="t">${hl(n.title, query)}</span>
+            ${matchLine(n, query) || (n.line ? `<span class="line">${esc(n.line)}</span>` : "")}
+          </span>
         </button>
         <button class="save" data-bm="${esc(n.id)}" aria-pressed="${bm.has(n.id)}"
           title="Save this note">${ICON.bookmark}${bm.has(n.id) ? "Saved" : "Save"}</button>
@@ -572,7 +647,7 @@ function openNote(id) {
 }
 
 /* ── wiring ─────────────────────────────────────────────────────────────── */
-function refresh() { renderRail(); renderList(); }
+function refresh() { renderLatest(); renderList(); }
 
 document.addEventListener("click", e => {
   const r = e.target.closest("[data-read]");
