@@ -81,7 +81,6 @@ def collect() -> dict:
             "text": text,
             "body": body,
             "recap": recap(body or text),
-            "line": recap(body or text, 118),
             "links": links,
         })
 
@@ -107,7 +106,6 @@ PAGE = r"""<title>Felix's Notes Archive</title>
 
   --brand: #0d6a9e;
   --brand-2: #0f7f9b;
-  --new: #0f7f9b;
   --green: #17914c;
   --gold: #9a6a0b;
   --mark: #a8e3f4;
@@ -132,7 +130,6 @@ PAGE = r"""<title>Felix's Notes Archive</title>
 
     --brand: #2fa8e0;
     --brand-2: #38b8dd;
-    --new: #38b8dd;
     --green: #3ddc84;
     --gold: #d8a949;
     --mark: #0f4257;
@@ -153,7 +150,6 @@ PAGE = r"""<title>Felix's Notes Archive</title>
 
   --brand: #2fa8e0;
   --brand-2: #38b8dd;
-  --new: #38b8dd;
   --green: #3ddc84;
   --gold: #d8a949;
   --mark: #0f4257;
@@ -285,33 +281,26 @@ button { font: inherit; cursor: pointer; }
 
 /* A checkbox, because it is the control that marks a note read — a bare icon
    here gave no clue what it did. */
-.readbox { flex: none; width: 44px; height: 44px; margin-top: .55rem; display: grid; place-items: center; background: none; border: 0; padding: 0; }
+.readbox { flex: none; width: 44px; height: 44px; margin-top: .32rem; display: grid; place-items: center; background: none; border: 0; padding: 0; }
 .box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line-strong); display: grid; place-items: center; background: var(--panel); transition: border-color .15s, background .15s; }
 .box svg { width: 12px; height: 12px; color: #fff; opacity: 0; }
 .readbox:hover .box { border-color: var(--green); }
 .is-read .box { background: var(--green); border-color: var(--green); }
 .is-read .box svg { opacity: 1; }
 
-.open { flex: 1; min-width: 0; display: flex; gap: 1rem; padding: .95rem .3rem; background: none; border: 0; color: inherit; text-align: left; }
+.open { flex: 1; min-width: 0; display: flex; gap: 1rem; padding: .72rem .3rem; background: none; border: 0; color: inherit; text-align: left; }
 .d {
-  flex: none; width: 5.6rem; padding-top: .12rem; font-size: .78rem; font-weight: 750;
+  flex: none; width: 6.5rem; padding-top: .12rem; font-size: .78rem; font-weight: 750;
   color: var(--ink-3); font-variant-numeric: tabular-nums; letter-spacing: .01em;
+  white-space: nowrap;
 }
 .body { flex: 1; min-width: 0; }
 .t { display: block; font-size: 1rem; font-weight: 700; line-height: 1.35; letter-spacing: -.012em; }
 .is-read .t { font-weight: 550; color: var(--ink-2); }
-.line {
-  display: block; margin-top: .22rem; font-size: .875rem; line-height: 1.5; color: var(--ink-3);
-  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
-}
 .ctx { display: block; margin-top: .3rem; font-size: .855rem; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
 
-/* Unread marker, the way a reader app signals what is new. */
-.newdot { flex: none; width: 7px; height: 7px; margin: 1.15rem .1rem 0 0; border-radius: 999px; background: var(--new); }
-.is-read .newdot { background: transparent; }
-
 .save {
-  flex: none; margin: .75rem .9rem 0 0; display: inline-flex; align-items: center; gap: .35rem;
+  flex: none; margin: .52rem .9rem 0 0; display: inline-flex; align-items: center; gap: .35rem;
   padding: .36rem .72rem; border-radius: 8px; background: transparent;
   border: 1px solid var(--line-strong); color: var(--ink-3); font-size: .76rem; font-weight: 700;
   opacity: .5; transition: opacity .15s, color .15s, border-color .15s;
@@ -600,12 +589,11 @@ function renderList() {
           aria-checked="${read.has(n.id)}"
           title="${read.has(n.id) ? "Mark as unread" : "Mark as read"}">
           <span class="box">${ICON.check}</span></button>
-        <span class="newdot" aria-hidden="true"></span>
         <button class="open" data-id="${esc(n.id)}">
           <span class="d">${fmt(n.date)}</span>
           <span class="body">
             <span class="t">${hl(n.title, query)}</span>
-            ${matchLine(n, query) || (n.line ? `<span class="line">${esc(n.line)}</span>` : "")}
+            ${matchLine(n, query)}
           </span>
         </button>
         <button class="save" data-bm="${esc(n.id)}" aria-pressed="${bm.has(n.id)}"
