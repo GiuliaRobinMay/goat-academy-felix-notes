@@ -24,9 +24,11 @@
   --green: #14834a;
   --gold: #92640a;
   --mark: #96dff3;
+  --tintbar: #dceaf2;
+  --zebra: #f7fafc;
   --shadow: 0 1px 2px rgba(4, 19, 26, .06);
   --shadow-lift: 0 14px 34px -14px rgba(4, 19, 26, .35);
-  --brandgrad: linear-gradient(135deg,#0b5f5c 0%,#0f6f92 52%,#1b93cf 100%);
+  --brandgrad: linear-gradient(140deg,#0d4a52 0%,#12566d 55%,#175f80 100%);
 
   /* One clean sans throughout — the serif was harder on the eye at length. */
   --ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
@@ -48,9 +50,11 @@
     --green: #3ddc84;
     --gold: #d8a949;
     --mark: #0f4257;
+    --tintbar: #17242a;
+    --zebra: #14191c;
     --shadow: 0 1px 2px rgba(0, 0, 0, .5);
     --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
-    --brandgrad: linear-gradient(135deg,#0a4f4d 0%,#0d5f7d 52%,#1780b4 100%);
+    --brandgrad: linear-gradient(140deg,#0c3d44 0%,#0f4a5c 55%,#13566e 100%);
   }
 }
 :root[data-theme="dark"] {
@@ -68,9 +72,11 @@
   --green: #3ddc84;
   --gold: #d8a949;
   --mark: #0f4257;
+  --tintbar: #17242a;
+  --zebra: #14191c;
   --shadow: 0 1px 2px rgba(0, 0, 0, .5);
   --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
-  --brandgrad: linear-gradient(135deg,#0a4f4d 0%,#0d5f7d 52%,#1780b4 100%);
+  --brandgrad: linear-gradient(140deg,#0c3d44 0%,#0f4a5c 55%,#13566e 100%);
 }
 
 * { box-sizing: border-box; }
@@ -111,9 +117,8 @@ button { font: inherit; cursor: pointer; }
 .gicon { padding: .55rem; width: 42px; height: 42px; justify-content: center; }
 
 /* ── sections ───────────────────────────────────────────────────────────── */
-.sec { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 2rem 0 .9rem; }
-.sec h2 { margin: 0; font-size: 1.15rem; font-weight: 800; letter-spacing: -.01em; }
-.sec p { margin: 0; font-size: .86rem; color: var(--ink-3); }
+.topgap { height: 1.8rem; }
+.filters { margin-top: 1.8rem; }
 
 /* ── latest: one lead note, four stacked beside it ─────────────────────── */
 /* Equal-weight cards gave the eye nothing to land on. A dominant lead with a
@@ -125,16 +130,10 @@ button { font: inherit; cursor: pointer; }
   position: relative; overflow: hidden;
   display: flex; flex-direction: column; text-align: left; color: #fff;
   padding: 1.7rem 1.8rem; border-radius: 18px; background: var(--brandgrad);
-  border: 0; box-shadow: var(--shadow-lift);
+  border: 1px solid var(--line); box-shadow: var(--shadow);
   transition: box-shadow .18s ease, transform .18s ease;
 }
-/* A soft highlight keeps the flat gradient from reading as a solid block. */
-.lead::after {
-  content: ""; position: absolute; inset: -40% -30% auto auto; width: 22rem; height: 22rem;
-  background: radial-gradient(circle, rgba(255,255,255,.16) 0%, transparent 62%);
-  pointer-events: none;
-}
-.lead:hover { transform: translateY(-3px); box-shadow: 0 20px 44px -16px rgba(4,19,26,.5); }
+.lead:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
 .lead .kicker, .lead h3, .lead p, .lead .go { position: relative; }
 .kicker {
   display: inline-flex; align-items: center; gap: .5rem; font-size: .69rem;
@@ -156,7 +155,7 @@ button { font: inherit; cursor: pointer; }
 
 .stack { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
 .stack-h {
-  padding: .8rem 1.15rem; border-bottom: 1px solid var(--line); background: var(--panel-2);
+  padding: .8rem 1.15rem; border-bottom: 1px solid var(--line); background: var(--tintbar);
   font-size: .67rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
 }
 .mini {
@@ -191,20 +190,24 @@ button { font: inherit; cursor: pointer; }
 /* ── list ───────────────────────────────────────────────────────────────── */
 .list { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); }
 .ygroup {
-  display: flex; align-items: center; gap: .75rem; padding: .8rem 1.3rem;
-  background: var(--panel-2); border-bottom: 1px solid var(--line);
-  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: center; gap: .6rem; width: 100%; padding: .78rem 1.3rem;
+  background: var(--tintbar); border: 0; border-bottom: 1px solid var(--line);
+  color: inherit; text-align: left; position: sticky; top: 0; z-index: 2;
 }
-.ygroup::before { content: ""; width: 3px; height: 1.05rem; border-radius: 2px; background: var(--brand-2); }
-.ygroup b { font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; color: var(--brand); }
-.ygroup span { font-size: .7rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.ygroup:hover { filter: brightness(.985); }
+.chev { flex: none; width: 15px; height: 15px; color: var(--ink-3); transition: transform .16s ease; }
+.ygroup[aria-expanded="false"] .chev { transform: rotate(-90deg); }
+.ygroup b { font-size: 1.02rem; font-weight: 800; letter-spacing: -.01em; color: var(--brand); }
+.ygroup span { font-size: .72rem; font-weight: 700; color: var(--ink-3); }
 
 .row { display: flex; align-items: flex-start; gap: .3rem; padding-left: .55rem; border-bottom: 1px solid var(--line); }
 .row:last-child { border-bottom: 0; }
+.row.alt { background: var(--zebra); }
 .row:hover { background: var(--panel-2); }
-.qbar { flex: none; width: 3px; align-self: stretch; margin-right: .15rem; opacity: .85; }
-.q1 { background: #1b93cf; } .q2 { background: #0f8f8a; }
-.q3 { background: #4f8fd0; } .q4 { background: #12708f; }
+.qbar { flex: none; width: 2px; align-self: stretch; margin-right: .2rem; opacity: .42; }
+.q1 { background: #2f86b8; } .q2 { background: #148079; }
+.q3 { background: #4a7fb4; } .q4 { background: #17627c; }
+.row:hover .qbar { opacity: .85; }
 
 /* A checkbox, because it is the control that marks a note read — a bare icon
    here gave no clue what it did. */
@@ -310,14 +313,8 @@ footer p { margin: 0; }
 </header>
 
 <div class="wrap">
-  <div class="sec">
-    <h2>Latest notes</h2>
-  </div>
+  <div class="topgap"></div>
   <div class="latest" id="latest"></div>
-
-  <div class="sec">
-    <h2>All notes</h2>
-  </div>
 
   <div class="filters">
     <div class="searchbox">
@@ -383,6 +380,8 @@ const save = () => {
   } catch (e) {}
 };
 
+/* Older years start collapsed so the page is not one endless list. */
+const collapsed = new Set();
 let onlyBm = false;
 let year = "all";
 let query = "";
@@ -503,9 +502,14 @@ function renderList() {
   }
 
   el.innerHTML = [...groups].map(([y, rows]) => `
-    <div class="ygroup"><b>${y}</b><span>${rows.length} note${rows.length === 1 ? "" : "s"}</span></div>
-    ${rows.map(n => `
-      <div class="row ${read.has(n.id) ? "is-read" : ""}">
+    <button class="ygroup" data-year-toggle="${y}" aria-expanded="${!collapsed.has(y)}">
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      <b>${y}</b><span>${rows.length} note${rows.length === 1 ? "" : "s"}</span>
+    </button>
+    ${collapsed.has(y) ? "" :
+    rows.map((n, i) => `
+      <div class="row ${read.has(n.id) ? "is-read" : ""} ${i % 2 ? "alt" : ""}">
         <span class="qbar q${quarter(n.date)}" aria-hidden="true"></span>
         <button class="readbox" data-read="${esc(n.id)}" role="checkbox"
           aria-checked="${read.has(n.id)}"
@@ -565,6 +569,12 @@ document.addEventListener("click", e => {
     const id = r.dataset.read;
     read.has(id) ? read.delete(id) : read.add(id);
     save(); refresh(); return;
+  }
+  const yt = e.target.closest("[data-year-toggle]");
+  if (yt) {
+    const y = yt.dataset.yearToggle;
+    collapsed.has(y) ? collapsed.delete(y) : collapsed.add(y);
+    renderList(); return;
   }
   const b = e.target.closest("[data-bm]");
   if (b) {
