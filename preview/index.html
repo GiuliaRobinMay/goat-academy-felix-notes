@@ -4,23 +4,23 @@
 /* Light theme is tinted toward the brand teal rather than plain white, so
    borders and panels actually read as structure. */
 :root {
-  --bg: #f0f5f8;
+  --bg: #e6eef4;
   --panel: #ffffff;
-  --panel-2: #e8f0f5;
-  --line: #d3e2ea;
-  --line-strong: #b2cddb;
-  --ink: #08181f;
-  --ink-2: #3d5b67;
-  --ink-3: #6a8794;
+  --panel-2: #f2f7fa;
+  --line: #c8dae5;
+  --line-strong: #9bbccf;
+  --ink: #04131a;
+  --ink-2: #33525f;
+  --ink-3: #5d7d8c;
 
-  --brand: #0d6a9e;
-  --brand-2: #0f7f9b;
-  --green: #17914c;
-  --gold: #9a6a0b;
-  --mark: #a8e3f4;
-  --shadow: 0 1px 2px rgba(8, 24, 31, .05);
-  --shadow-lift: 0 10px 28px -12px rgba(8, 24, 31, .28);
-  --lead-tint: linear-gradient(140deg, #f4fafc 0%, #e7f2f7 100%);
+  --brand: #0a5f92;
+  --brand-2: #0d7d99;
+  --green: #14834a;
+  --gold: #92640a;
+  --mark: #96dff3;
+  --shadow: 0 1px 2px rgba(4, 19, 26, .06);
+  --shadow-lift: 0 14px 34px -14px rgba(4, 19, 26, .35);
+  --brandgrad: linear-gradient(135deg,#0b5f5c 0%,#0f6f92 52%,#1b93cf 100%);
 
   /* One clean sans throughout — the serif was harder on the eye at length. */
   --ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
@@ -44,7 +44,7 @@
     --mark: #0f4257;
     --shadow: 0 1px 2px rgba(0, 0, 0, .5);
     --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
-    --lead-tint: linear-gradient(140deg, #141b1f 0%, #0e1416 100%);
+    --brandgrad: linear-gradient(135deg,#0a4f4d 0%,#0d5f7d 52%,#1780b4 100%);
   }
 }
 :root[data-theme="dark"] {
@@ -64,7 +64,7 @@
   --mark: #0f4257;
   --shadow: 0 1px 2px rgba(0, 0, 0, .5);
   --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
-  --lead-tint: linear-gradient(140deg, #141b1f 0%, #0e1416 100%);
+  --brandgrad: linear-gradient(135deg,#0a4f4d 0%,#0d5f7d 52%,#1780b4 100%);
 }
 
 * { box-sizing: border-box; }
@@ -81,19 +81,18 @@ button { font: inherit; cursor: pointer; }
   background: linear-gradient(115deg,#0b5f5c 0%,#0f6f92 48%,#1b93cf 100%);
   color: #fff;
 }
-.banner-in { display: flex; align-items: center; gap: 1.35rem; padding: 2.9rem 0 3rem; }
+.banner-in { display: flex; align-items: center; gap: 1.1rem; padding: 1.6rem 0 1.7rem; }
 .mark {
-  flex: none; width: 74px; height: 74px; border-radius: 19px; display: grid;
+  flex: none; width: 54px; height: 54px; border-radius: 14px; display: grid;
   place-items: center; background: rgba(255,255,255,.15);
   border: 1px solid rgba(255,255,255,.3);
 }
-.mark svg { width: 38px; height: 38px; }
+.mark svg { width: 27px; height: 27px; }
 .banner h1 {
-  margin: 0; font-size: clamp(1.9rem, 4.6vw, 3.05rem); font-weight: 800;
-  line-height: 1.02; letter-spacing: -.02em; text-transform: uppercase;
+  margin: 0; font-size: clamp(1.3rem, 2.6vw, 1.72rem); font-weight: 600;
+  line-height: 1.1; letter-spacing: .012em; text-transform: uppercase;
   text-wrap: balance;
 }
-.banner .sub { margin: .5rem 0 0; font-size: 1.02rem; color: rgba(255,255,255,.85); }
 .banner-acts { margin-left: auto; display: flex; align-items: center; gap: .6rem; }
 .gbtn {
   display: inline-flex; align-items: center; gap: .45rem; padding: .55rem 1rem;
@@ -117,26 +116,35 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 52rem) { .latest { grid-template-columns: 1fr; } }
 
 .lead {
-  display: flex; flex-direction: column; text-align: left; color: inherit;
-  padding: 1.7rem 1.8rem; border-radius: 18px; background: var(--lead-tint);
-  border: 1px solid var(--line); box-shadow: var(--shadow);
-  transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; text-align: left; color: #fff;
+  padding: 1.7rem 1.8rem; border-radius: 18px; background: var(--brandgrad);
+  border: 0; box-shadow: var(--shadow-lift);
+  transition: box-shadow .18s ease, transform .18s ease;
 }
-.lead:hover { border-color: var(--line-strong); box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+/* A soft highlight keeps the flat gradient from reading as a solid block. */
+.lead::after {
+  content: ""; position: absolute; inset: -40% -30% auto auto; width: 22rem; height: 22rem;
+  background: radial-gradient(circle, rgba(255,255,255,.16) 0%, transparent 62%);
+  pointer-events: none;
+}
+.lead:hover { transform: translateY(-3px); box-shadow: 0 20px 44px -16px rgba(4,19,26,.5); }
+.lead .kicker, .lead h3, .lead p, .lead .go { position: relative; }
 .kicker {
   display: inline-flex; align-items: center; gap: .5rem; font-size: .69rem;
   font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--brand-2);
 }
 .kicker::before { content: ""; width: 1.6rem; height: 2px; background: currentColor; border-radius: 2px; }
+.lead .kicker { color: #fff; }
 .lead h3 {
   margin: .85rem 0 .6rem; font-size: clamp(1.35rem, 2.5vw, 1.72rem); font-weight: 800;
   line-height: 1.18; letter-spacing: -.024em; text-wrap: balance;
 }
-.lead p { margin: 0; font-size: .96rem; line-height: 1.62; color: var(--ink-2);
+.lead p { margin: 0; font-size: .96rem; line-height: 1.62; color: rgba(255,255,255,.9);
   display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 .lead .go {
   margin-top: auto; padding-top: 1.1rem; font-size: .8rem; font-weight: 750;
-  letter-spacing: .04em; color: var(--brand); display: inline-flex; align-items: center; gap: .4rem;
+  letter-spacing: .04em; color: #fff; display: inline-flex; align-items: center; gap: .4rem;
 }
 .lead:hover .go { gap: .6rem; }
 
@@ -177,16 +185,20 @@ button { font: inherit; cursor: pointer; }
 /* ── list ───────────────────────────────────────────────────────────────── */
 .list { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); }
 .ygroup {
-  display: flex; align-items: baseline; gap: .75rem; padding: .85rem 1.3rem;
+  display: flex; align-items: center; gap: .75rem; padding: .8rem 1.3rem;
   background: var(--panel-2); border-bottom: 1px solid var(--line);
   position: sticky; top: 0; z-index: 2;
 }
-.ygroup b { font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; }
+.ygroup::before { content: ""; width: 3px; height: 1.05rem; border-radius: 2px; background: var(--brand-2); }
+.ygroup b { font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; color: var(--brand); }
 .ygroup span { font-size: .7rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 
 .row { display: flex; align-items: flex-start; gap: .3rem; padding-left: .55rem; border-bottom: 1px solid var(--line); }
 .row:last-child { border-bottom: 0; }
 .row:hover { background: var(--panel-2); }
+.qbar { flex: none; width: 3px; align-self: stretch; margin-right: .15rem; opacity: .85; }
+.q1 { background: #1b93cf; } .q2 { background: #0f8f8a; }
+.q3 { background: #4f8fd0; } .q4 { background: #12708f; }
 
 /* A checkbox, because it is the control that marks a note read — a bare icon
    here gave no clue what it did. */
@@ -279,7 +291,6 @@ footer p { margin: 0; }
     </div>
     <div>
       <h1>Felix&rsquo;s Market Notes</h1>
-      <p class="sub">Every weekly note, in one place</p>
     </div>
     <div class="banner-acts">
       <button class="gbtn" id="bmfilter" aria-pressed="false">
@@ -295,13 +306,11 @@ footer p { margin: 0; }
 <div class="wrap">
   <div class="sec">
     <h2>Latest notes</h2>
-    <p>The five most recent</p>
   </div>
   <div class="latest" id="latest"></div>
 
   <div class="sec">
     <h2>All notes</h2>
-    <p id="shown"></p>
   </div>
 
   <div class="filters">
@@ -393,6 +402,7 @@ paintTheme();
 const esc = s => (s ?? "").replace(/[&<>"]/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
+const quarter = d => d ? Math.floor(+d.slice(5, 7) / 3.01) + 1 : 1;
 const fmt = d => d ? new Date(d + "T00:00:00Z").toLocaleDateString("en-GB",
   { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "Undated";
 const fmtLong = d => d ? new Date(d + "T00:00:00Z").toLocaleDateString("en-GB",
@@ -473,10 +483,6 @@ function renderYears() {
 function renderList() {
   const hits = NOTES.filter(matches);
   const el = document.getElementById("list");
-  document.getElementById("shown").textContent =
-    hits.length === NOTES.length ? `${NOTES.length} notes`
-                                 : `${hits.length} of ${NOTES.length} notes`;
-
   if (!hits.length) {
     el.innerHTML = `<div class="empty"><b>Nothing to show</b>${
       onlyBm ? "Save a note and it will appear here." : "Try a different search or year."}</div>`;
@@ -494,6 +500,7 @@ function renderList() {
     <div class="ygroup"><b>${y}</b><span>${rows.length} note${rows.length === 1 ? "" : "s"}</span></div>
     ${rows.map(n => `
       <div class="row ${read.has(n.id) ? "is-read" : ""}">
+        <span class="qbar q${quarter(n.date)}" aria-hidden="true"></span>
         <button class="readbox" data-read="${esc(n.id)}" role="checkbox"
           aria-checked="${read.has(n.id)}"
           title="${read.has(n.id) ? "Mark as unread" : "Mark as read"}">
