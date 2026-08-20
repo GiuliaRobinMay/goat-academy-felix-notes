@@ -298,6 +298,24 @@ dialog::backdrop { background: rgba(6,16,22,.6); }
 .prose p:last-child { margin-bottom: 0; }
 .prose strong { font-weight: 800; }
 .prose a { color: var(--brand-2); font-weight: 600; overflow-wrap: anywhere; }
+
+/* The week's links, lifted above the blurb so they are the first thing
+   reachable rather than buried at the bottom of the post. */
+.toplinks { display: grid; gap: .5rem; margin: 0 0 1.15rem; }
+.rule { height: 1px; margin: 0 0 1.15rem; border: 0; background: var(--line); }
+.tl {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .12rem .8rem;
+  padding: .85rem 1.05rem; border-radius: 12px; text-decoration: none;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--ink);
+  transition: border-color .15s ease, background .15s ease;
+}
+.tl:hover { border-color: var(--brand-2); background: var(--tintbar); }
+.tl b { font-size: 1rem; font-weight: 800; letter-spacing: -.01em; }
+.tl span {
+  grid-column: 1; font-size: .8rem; color: var(--ink-3);
+  overflow-wrap: anywhere; line-height: 1.4;
+}
+.tl svg { grid-row: 1 / span 2; grid-column: 2; width: 18px; height: 18px; color: var(--brand-2); }
 .mynote { padding: 1rem 1.15rem; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); }
 .mynote h4 { margin: 0 0 .55rem; font-size: .69rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
 .mynote textarea {
@@ -560,6 +578,25 @@ function linkify(text) {
   });
 }
 
+/* Felix puts the week's links at the foot of the post, under the blurb.
+   Readers want them first, so lift any line that is just "Label: URL" to the
+   top. The length guard stops a sentence that merely ends in a URL from being
+   mistaken for a link line. */
+function splitLinks(text) {
+  const links = [], prose = [];
+  for (const raw of (text || "").split(/\r?\n/)) {
+    const line = raw.trim();
+    const m = line.match(/^(.{0,60}?)[\s:–—-]*\s*(https?:\/\/\S+)\s*$/);
+    if (m && m[2]) {
+      const label = m[1].replace(/[\s:–—-]+$/, "").trim();
+      links.push({ label: label || "Open the note", url: m[2] });
+    } else if (line) {
+      prose.push(line);
+    }
+  }
+  return { links, prose: prose.join("\n") };
+}
+
 /* When a note matches on its text rather than its title, show the passage that
    matched — otherwise the row gives no clue why it is in the results. */
 function matchLine(n, q) {
@@ -714,9 +751,19 @@ function openNote(id) {
     n.topic ? `${n.author} · ${n.title}` : n.author;
   paintSheetSave();
 
-  const text = n.body || n.text || "";
+  const { links, prose } = splitLinks(n.body || n.text || "");
+  const linkBlock = links.length ? `<div class="toplinks">${links.map(l => `
+    <a class="tl" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">
+      <b>${esc(l.label)}</b>
+      <span>${esc(l.url)}</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+    </a>`).join("")}</div>` : "";
+
   document.getElementById("s-text").innerHTML =
-    text ? `<div class="prose">${noteHtml(text)}</div>` : "";
+    linkBlock
+    + (linkBlock && prose ? `<hr class="rule">` : "")
+    + (prose ? `<div class="prose">${noteHtml(prose)}</div>` : "");
 
   document.getElementById("s-mynote").value = mine[id] || "";
   document.getElementById("s-tick").classList.remove("on");
