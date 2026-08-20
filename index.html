@@ -25,7 +25,6 @@
   --gold: #92640a;
   --mark: #96dff3;
   --tintbar: #dceaf2;
-  --zebra: #f7fafc;
   --shadow: 0 1px 2px rgba(4, 19, 26, .06);
   --shadow-lift: 0 14px 34px -14px rgba(4, 19, 26, .35);
   --brandgrad: linear-gradient(140deg,#0d4a52 0%,#12566d 55%,#175f80 100%);
@@ -51,7 +50,6 @@
     --gold: #d8a949;
     --mark: #0f4257;
     --tintbar: #17242a;
-    --zebra: #14191c;
     --shadow: 0 1px 2px rgba(0, 0, 0, .5);
     --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
     --brandgrad: linear-gradient(140deg,#0c3d44 0%,#0f4a5c 55%,#13566e 100%);
@@ -73,7 +71,6 @@
   --gold: #d8a949;
   --mark: #0f4257;
   --tintbar: #17242a;
-  --zebra: #14191c;
   --shadow: 0 1px 2px rgba(0, 0, 0, .5);
   --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, .85);
   --brandgrad: linear-gradient(140deg,#0c3d44 0%,#0f4a5c 55%,#13566e 100%);
@@ -188,57 +185,90 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* ── list ───────────────────────────────────────────────────────────────── */
-.list { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); }
-.ygroup {
-  display: flex; align-items: center; gap: .6rem; width: 100%; padding: .78rem 1.3rem;
-  background: var(--tintbar); border: 0; border-bottom: 1px solid var(--line);
-  color: inherit; text-align: left; position: sticky; top: 0; z-index: 2;
+/* The archive as a board: a tinted canvas, one band per year, and inside it
+   the months as colour-coded groups of card rows — date, note, then a Status
+   and a Saved block per row, the way a work board reads state at a glance. */
+.list { padding: .9rem; border: 1px solid var(--line); border-radius: 16px; background: var(--panel-2); }
+.ymod + .ymod { margin-top: 1.1rem; }
+.yband {
+  display: flex; align-items: center; gap: .65rem; width: 100%; padding: .74rem 1rem;
+  border: 0; border-radius: 12px; background: var(--brandgrad); color: #fff;
+  text-align: left; position: sticky; top: .5rem; z-index: 2; box-shadow: var(--shadow);
 }
-.ygroup:hover { filter: brightness(.985); }
-.chev { flex: none; width: 15px; height: 15px; color: var(--ink-3); transition: transform .16s ease; }
-.ygroup[aria-expanded="false"] .chev { transform: rotate(-90deg); }
-.ygroup b { font-size: 1.02rem; font-weight: 800; letter-spacing: -.01em; color: var(--brand); }
-.ygroup span { font-size: .72rem; font-weight: 700; color: var(--ink-3); }
+.yband:hover { filter: brightness(1.07); }
+.chev { flex: none; width: 16px; height: 16px; color: rgba(255,255,255,.85); transition: transform .16s ease; }
+.yband[aria-expanded="false"] .chev { transform: rotate(-90deg); }
+.yband b { font-size: 1.05rem; font-weight: 800; letter-spacing: .02em; }
+.yband .tally {
+  margin-left: auto; padding: .28rem .7rem; border-radius: 999px;
+  background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.25);
+  font-size: .72rem; font-weight: 700; letter-spacing: .02em; white-space: nowrap;
+}
 
-.row { display: flex; align-items: flex-start; gap: .3rem; padding-left: .55rem; border-bottom: 1px solid var(--line); }
-.row:last-child { border-bottom: 0; }
-.row.alt { background: var(--zebra); }
-.row:hover { background: var(--panel-2); }
-.qbar { flex: none; width: 2px; align-self: stretch; margin-right: .2rem; opacity: .42; }
-.q1 { background: #2f86b8; } .q2 { background: #148079; }
-.q3 { background: #4a7fb4; } .q4 { background: #17627c; }
-.row:hover .qbar { opacity: .85; }
+/* Each month carries one accent (--acc) that colours its heading and the edge
+   of every row beneath it, so a scan down the page reads month by month. */
+.mgroup { margin: 1.1rem .1rem 0; }
+.mhead {
+  display: grid; grid-template-columns: minmax(0,1fr) 7rem 6.2rem; gap: .5rem 1rem;
+  align-items: end; padding: 0 .95rem .4rem calc(.95rem + 6px);
+}
+.mhead h3 {
+  margin: 0; font-size: .95rem; font-weight: 800; letter-spacing: -.01em;
+  color: color-mix(in srgb, var(--acc) 72%, var(--ink));
+}
+.mhead h3 span { margin-left: .55rem; font-size: .72rem; font-weight: 700; color: var(--ink-3); }
+.clab {
+  font-size: .66rem; font-weight: 750; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink-3); text-align: center;
+}
 
-/* A checkbox, because it is the control that marks a note read — a bare icon
-   here gave no clue what it did. */
-.readbox { flex: none; width: 44px; height: 44px; margin-top: .32rem; display: grid; place-items: center; background: none; border: 0; padding: 0; }
-.box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line-strong); display: grid; place-items: center; background: var(--panel); transition: border-color .15s, background .15s; }
-.box svg { width: 12px; height: 12px; color: #fff; opacity: 0; }
-.readbox:hover .box { border-color: var(--green); }
-.is-read .box { background: var(--green); border-color: var(--green); }
-.is-read .box svg { opacity: 1; }
-
-.open { flex: 1; min-width: 0; display: flex; gap: 1rem; padding: .72rem .3rem; background: none; border: 0; color: inherit; text-align: left; }
+.mrow {
+  display: grid; grid-template-columns: 4.6rem minmax(0,1fr) 7rem 6.2rem;
+  grid-template-areas: "d t st sv"; gap: .5rem 1rem; align-items: center;
+  padding: .5rem .95rem; margin-top: .4rem;
+  border: 1px solid var(--line); border-left: 6px solid var(--acc);
+  border-radius: 10px; background: var(--panel); box-shadow: var(--shadow);
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.mrow:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
 .d {
-  flex: none; width: 6.5rem; padding-top: .12rem; font-size: .78rem; font-weight: 750;
-  color: var(--ink-3); font-variant-numeric: tabular-nums; letter-spacing: .01em;
-  white-space: nowrap;
+  grid-area: d; font-size: .8rem; font-weight: 750; color: var(--ink-3);
+  font-variant-numeric: tabular-nums; letter-spacing: .01em; white-space: nowrap;
 }
-.body { flex: 1; min-width: 0; }
-.t { display: block; font-size: 1rem; font-weight: 700; line-height: 1.35; letter-spacing: -.012em; }
+.open { grid-area: t; min-width: 0; padding: .3rem 0; background: none; border: 0; color: inherit; text-align: left; }
+.open:hover .t { text-decoration: underline; text-underline-offset: 3px; }
+.t { display: block; font-size: .98rem; font-weight: 700; line-height: 1.35; letter-spacing: -.012em; }
 .is-read .t { font-weight: 550; color: var(--ink-2); }
-.ctx { display: block; margin-top: .3rem; font-size: .855rem; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
+.ctx { display: block; margin-top: .25rem; font-size: .84rem; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
 
-.save {
-  flex: none; margin: .52rem .9rem 0 0; display: inline-flex; align-items: center; gap: .35rem;
-  padding: .36rem .72rem; border-radius: 8px; background: transparent;
-  border: 1px solid var(--line-strong); color: var(--ink-3); font-size: .76rem; font-weight: 700;
-  opacity: .5; transition: opacity .15s, color .15s, border-color .15s;
+/* Status and Saved are solid colour blocks in the manner of a board — and
+   each block is also the button that toggles its own state. */
+.pill {
+  padding: .42rem .5rem; border-radius: 7px; border: 1.5px solid var(--line-strong);
+  background: var(--panel); color: var(--ink-3); font-size: .76rem; font-weight: 750;
+  display: inline-flex; align-items: center; justify-content: center; gap: .34rem;
+  white-space: nowrap; transition: background .15s, color .15s, border-color .15s;
 }
-.row:hover .save { opacity: 1; }
+.pill svg { width: 13px; height: 13px; }
+.p-read { grid-area: st; }
+.p-save { grid-area: sv; }
+.p-read:hover { border-color: #00c875; }
+.p-save:hover { border-color: #fdab3d; }
+.pill[aria-pressed="true"]:hover { filter: brightness(.96); }
+.p-read[aria-pressed="true"] { background: #00c875; border-color: #00c875; color: #03361d; }
+.p-save[aria-pressed="true"] { background: #fdab3d; border-color: #fdab3d; color: #4a2c00; }
+.p-save[aria-pressed="true"] svg { fill: currentColor; }
+
+/* The compact save button in the reader sheet. */
+.save {
+  display: inline-flex; align-items: center; gap: .35rem; padding: .4rem .75rem;
+  border-radius: 8px; background: transparent; border: 1px solid var(--line-strong);
+  color: var(--ink-3); font-size: .76rem; font-weight: 700;
+  transition: color .15s, border-color .15s;
+}
 .save svg { width: 14px; height: 14px; }
-.save:hover { border-color: var(--gold); color: var(--gold); opacity: 1; }
-.save[aria-pressed="true"] { color: var(--gold); border-color: var(--gold); opacity: 1; }
+.save:hover { border-color: var(--gold); color: var(--gold); }
+.save[aria-pressed="true"] { color: var(--gold); border-color: var(--gold); }
 .save[aria-pressed="true"] svg { fill: currentColor; }
 
 .empty { padding: 3.4rem 1.5rem; text-align: center; color: var(--ink-3); }
@@ -261,29 +291,13 @@ dialog::backdrop { background: rgba(6,16,22,.6); }
 .x:hover { color: var(--brand-2); border-color: var(--brand-2); }
 .sheet-b { padding: 1.3rem 1.6rem 1.7rem; overflow-y: auto; }
 .prose {
-  font-size: 1.06rem; line-height: 1.78; letter-spacing: .002em;
-  white-space: pre-wrap; overflow-wrap: break-word; margin: 0 0 1.4rem;
-  color: var(--ink);
+  font-size: 1.06rem; line-height: 1.7; letter-spacing: .002em;
+  overflow-wrap: break-word; margin: 0 0 1.4rem; color: var(--ink);
 }
+.prose p { margin: 0 0 .9em; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { font-weight: 800; }
 .prose a { color: var(--brand-2); font-weight: 600; overflow-wrap: anywhere; }
-
-/* The week's links, lifted above the blurb so they are the first thing
-   reachable rather than buried at the bottom of the post. */
-.toplinks { display: grid; gap: .5rem; margin: 0 0 1.2rem; }
-.rule { height: 1px; margin: 0 0 1.2rem; border: 0; background: var(--line); }
-.tl {
-  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .1rem .8rem;
-  padding: .85rem 1.05rem; border-radius: 12px; text-decoration: none;
-  background: var(--panel-2); border: 1px solid var(--line); color: var(--ink);
-  transition: border-color .15s ease, background .15s ease;
-}
-.tl:hover { border-color: var(--brand-2); background: var(--tintbar); }
-.tl b { font-size: 1rem; font-weight: 750; letter-spacing: -.01em; }
-.tl span {
-  grid-column: 1; font-size: .8rem; color: var(--ink-3);
-  overflow-wrap: anywhere; line-height: 1.4;
-}
-.tl svg { grid-row: 1 / span 2; grid-column: 2; width: 18px; height: 18px; color: var(--brand-2); }
 .mynote { padding: 1rem 1.15rem; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); }
 .mynote h4 { margin: 0 0 .55rem; font-size: .69rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
 .mynote textarea {
@@ -303,8 +317,13 @@ footer p { margin: 0; }
 @media (max-width: 44rem) {
   .banner-in { flex-wrap: wrap; padding: 2rem 0 2.2rem; gap: 1rem; }
   .banner-acts { margin-left: 0; width: 100%; }
-  .d { width: 100%; }
-  .open { flex-wrap: wrap; gap: .2rem .8rem; }
+  .list { padding: .6rem; }
+  .mhead { grid-template-columns: 1fr; padding-left: calc(.8rem + 6px); }
+  .clab { display: none; }
+  .mrow {
+    grid-template-columns: 1fr auto auto; grid-template-areas: "d st sv" "t t t";
+    row-gap: .2rem; padding: .6rem .8rem;
+  }
 }
 </style>
 
@@ -346,7 +365,8 @@ footer p { margin: 0; }
   <div class="list" id="list"></div>
 
   <footer>
-    <p>Historical market commentary, archived for reference. Not financial advice.</p>
+    <p>Historical market commentary, archived for reference. Not financial advice.
+       Topic titles are illustrative samples for this preview.</p>
   </footer>
 </div>
 
@@ -358,7 +378,7 @@ footer p { margin: 0; }
       <p id="s-by"></p>
     </div>
     <div style="display:flex;gap:.5rem;flex:none">
-      <button class="save" id="s-save" aria-pressed="false" style="margin:0" title="Save this note"></button>
+      <button class="save" id="s-save" aria-pressed="false" title="Save this note"></button>
       <button class="x" id="s-close" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
@@ -379,6 +399,86 @@ const DATA = {"notes": [{"id": "105686196", "title": "Felix's notes for 8 August
 const NOTES = DATA.notes;
 const KEY = "felix-notes-v2";
 
+/* Illustrative topic titles, keyed by date. Every real post is titled
+   "Felix's notes for <date>", which makes the list read as a wall of dates —
+   these placeholders show what the archive looks like once real topics are
+   extracted from the note bodies. Swap or drop entries freely; a date without
+   an entry falls back to the post's own title. */
+const SAMPLE_TOPICS = {
+  "2025-04-07": "Tariff shock week: reading panic without joining it",
+  "2025-04-09": "Midweek special: making sense of a violent reversal",
+  "2025-04-10": "Follow-up: what the whipsaw means for your watchlist",
+  "2025-04-14": "Earnings season opens — banks set the tone",
+  "2025-04-21": "Dollar drift and the case for quality names",
+  "2025-04-23": "Midweek check: megacap earnings expectations",
+  "2025-04-28": "A quieter grind higher as breadth improves",
+  "2025-05-05": "Fed week: patience is a position",
+  "2025-05-12": "Relief rally — what to trim, what to keep",
+  "2025-05-19": "Bond market noise vs. the real yield signal",
+  "2025-05-26": "Holiday-shortened week, full-size setups",
+  "2025-06-01": "June playbook: rotation over chasing",
+  "2025-06-09": "Inflation week: the setup into CPI",
+  "2025-06-15": "Oil spikes and stress-testing the portfolio",
+  "2025-06-22": "Risk-off refresher: know where your exits are",
+  "2025-06-29": "Half-time report: winners, laggards, lessons",
+  "2025-07-06": "New highs on thin volume — trust but verify",
+  "2025-07-13": "Bank earnings and the health of the consumer",
+  "2025-07-20": "Small caps stir: rotation or head fake?",
+  "2025-07-27": "Big tech week: capex is the story",
+  "2025-08-03": "Jobs wobble brings recession chatter back",
+  "2025-08-10": "Buying fear: the levels that matter",
+  "2025-08-17": "Jackson Hole preview: what could change the trend",
+  "2025-08-24": "The rate-cut trade after Powell's tone shift",
+  "2025-08-31": "September setup: seasonally weak, tactically ready",
+  "2025-09-07": "Payrolls and the soft-landing question",
+  "2025-09-14": "Cut week: how markets trade the first move",
+  "2025-09-21": "After the cut — follow-through or fade?",
+  "2025-09-28": "Quarter-end flows and window dressing",
+  "2025-10-05": "Q4 kickoff: the seasonal tailwind arrives",
+  "2025-10-13": "Earnings season: guidance beats the headline",
+  "2025-10-14": "Watchlist refresh — five setups worth stalking",
+  "2025-10-19": "Gold's quiet breakout gets loud",
+  "2025-10-26": "Megacap earnings marathon: what actually matters",
+  "2025-11-02": "Breadth check: the rally beneath the rally",
+  "2025-11-09": "Melt-up mechanics — respecting a strong tape",
+  "2025-11-16": "AI trade at a crossroads into chip earnings",
+  "2025-11-23": "Thanksgiving tape: light volume, real moves",
+  "2025-12-07": "Santa rally checklist: what history says",
+  "2025-12-14": "The year's final Fed meeting — positioning",
+  "2025-12-21": "Year-end review: the trades that taught the most",
+  "2026-01-04": "New year, same rules: process over prediction",
+  "2026-01-11": "January's early leaders — and the traps",
+  "2026-01-18": "Earnings season opens: banks first, guidance first",
+  "2026-01-25": "Megacap week: can results carry the multiple?",
+  "2026-02-01": "Jobs Friday: good news is good news again",
+  "2026-02-08": "Chasing strength vs. buying the pullback",
+  "2026-02-15": "CPI week and the last mile of inflation",
+  "2026-02-22": "Chip earnings: the market's report card",
+  "2026-03-02": "March check-in: leadership keeps rotating",
+  "2026-03-08": "Volatility returns — the plan beats the panic",
+  "2026-03-16": "Fed week: dots, cuts and the dollar",
+  "2026-03-22": "Quad witching aftermath, quarter-end flows",
+  "2026-03-29": "Q1 wrap: what worked, what didn't, what's next",
+  "2026-04-05": "Q2 kickoff — the earnings bar for a tired tape",
+  "2026-04-12": "Bank earnings and the credit pulse",
+  "2026-04-19": "Anatomy of a pullback: healthy or not?",
+  "2026-04-26": "Big tech earnings: margins do the talking",
+  "2026-05-03": "Sell in May? The data behind the cliché",
+  "2026-05-10": "Rates reprice — bonds move first, stocks follow",
+  "2026-05-17": "New highs, narrow breadth: handle with care",
+  "2026-05-24": "Memorial Day week: quiet tape, loud setups",
+  "2026-06-07": "Summer rotation: value's turn?",
+  "2026-06-14": "Triple witching meets the June Fed meeting",
+  "2026-06-21": "Defensives lead — what that usually signals",
+  "2026-06-28": "Half-year review: grading the playbook",
+  "2026-07-12": "Earnings warm-up: resetting the watchlist",
+  "2026-07-18": "Breakout prices: where the scanner is pointing",
+  "2026-07-25": "Megacap earnings: AI spend meets AI revenue",
+  "2026-08-01": "August opens: jobs data and two fresh setups",
+  "2026-08-08": "A new format for your notes — meet the Heartbeat Scanner",
+};
+NOTES.forEach(n => { n.topic = SAMPLE_TOPICS[n.date] || null; });
+
 const ICON = {
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6"/></svg>',
   bookmark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>',
@@ -398,8 +498,10 @@ const save = () => {
   } catch (e) {}
 };
 
-/* Older years start collapsed so the page is not one endless list. */
-const collapsed = new Set();
+/* Only the newest year starts open so the page is not one endless list.
+   Search and the saved filter look through collapsed years, so a match can
+   never hide behind a closed one. */
+const collapsed = new Set(DATA.years.slice(1));
 let onlyBm = false;
 let year = "all";
 let query = "";
@@ -425,11 +527,22 @@ paintTheme();
 const esc = s => (s ?? "").replace(/[&<>"]/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-const quarter = d => d ? Math.floor(+d.slice(5, 7) / 3.01) + 1 : 1;
 const fmt = d => d ? new Date(d + "T00:00:00Z").toLocaleDateString("en-GB",
   { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "Undated";
 const fmtLong = d => d ? new Date(d + "T00:00:00Z").toLocaleDateString("en-GB",
   { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }) : "Undated";
+/* Rows sit under year and month headers, so they carry the day alone. */
+const fmtDay = d => d ? new Date(d + "T00:00:00Z").toLocaleDateString("en-GB",
+  { day: "numeric", month: "short", timeZone: "UTC" }) : "Undated";
+const fmtMonth = m => m === "undated" ? "Undated"
+  : new Date(m + "-01T00:00:00Z").toLocaleDateString("en-GB",
+    { month: "long", year: "numeric", timeZone: "UTC" });
+
+/* One accent per calendar month, cycled so neighbouring months never match
+   and a month keeps its colour from one year to the next. */
+const ACCENTS = ["#0073ea", "#00c875", "#a25ddc", "#fdab3d", "#e2445c", "#00b5c4"];
+const accent = m => m === "undated" ? "#8a93a6"
+  : ACCENTS[(+m.slice(5, 7) - 1) % ACCENTS.length];
 
 function hl(text, q) {
   if (!q) return esc(text);
@@ -447,28 +560,10 @@ function linkify(text) {
   });
 }
 
-/* Felix puts the week's links at the bottom of the post, under the blurb.
-   Readers want them first, so hoist any line carrying a URL to the top and
-   keep the prose underneath. */
-function splitLinks(text) {
-  const links = [], prose = [];
-  for (const raw of (text || "").split("\n")) {
-    const line = raw.trim();
-    const m = line.match(/^(.*?)[:\s]*\s*(https?:\/\/\S+)\s*$/);
-    if (m && m[2]) {
-      const label = m[1].replace(/[\s:–-]+$/, "").trim();
-      links.push({ label: label || "Open the note", url: m[2] });
-    } else {
-      prose.push(raw);
-    }
-  }
-  return { links, prose: prose.join("\n").replace(/\n{3,}/g, "\n\n").trim() };
-}
-
 /* When a note matches on its text rather than its title, show the passage that
    matched — otherwise the row gives no clue why it is in the results. */
 function matchLine(n, q) {
-  if (!q || n.title.toLowerCase().includes(q.toLowerCase())) return "";
+  if (!q || (n.topic || n.title).toLowerCase().includes(q.toLowerCase())) return "";
   const hay = n.body || n.text || "";
   const at = hay.toLowerCase().indexOf(q.toLowerCase());
   if (at < 0) return "";
@@ -483,6 +578,7 @@ const matches = n => {
   if (!query) return true;
   const q = query.toLowerCase();
   return n.title.toLowerCase().includes(q)
+    || (n.topic || "").toLowerCase().includes(q)
     || (n.body || "").toLowerCase().includes(q)
     || n.text.toLowerCase().includes(q);
 };
@@ -495,7 +591,7 @@ function renderLatest() {
   document.getElementById("latest").innerHTML = `
     <button class="lead" data-id="${esc(lead.id)}">
       <span class="kicker">Newest &middot; ${fmt(lead.date)}</span>
-      <h3>${esc(lead.title)}</h3>
+      <h3>${esc(lead.topic || lead.title)}</h3>
       <p>${esc(lead.recap)}</p>
       <span class="go">Read the note &rarr;</span>
     </button>
@@ -504,7 +600,7 @@ function renderLatest() {
       ${rest.map(n => `
         <button class="mini" data-id="${esc(n.id)}">
           <span class="when">${fmt(n.date)}</span>
-          <h4>${esc(n.title)}</h4>
+          <h4>${esc(n.topic || n.title)}</h4>
         </button>`).join("")}
     </div>`;
 }
@@ -530,37 +626,56 @@ function renderList() {
     return;
   }
 
-  const groups = new Map();
+  /* Year, then month within the year — both arrive newest first. */
+  const years = new Map();
   for (const n of hits) {
     const y = n.date ? n.date.slice(0, 4) : "Undated";
-    if (!groups.has(y)) groups.set(y, []);
-    groups.get(y).push(n);
+    const m = n.date ? n.date.slice(0, 7) : "undated";
+    if (!years.has(y)) years.set(y, new Map());
+    const months = years.get(y);
+    if (!months.has(m)) months.set(m, []);
+    months.get(m).push(n);
   }
 
-  el.innerHTML = [...groups].map(([y, rows]) => `
-    <button class="ygroup" data-year-toggle="${y}" aria-expanded="${!collapsed.has(y)}">
-      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      <b>${y}</b><span>${rows.length} note${rows.length === 1 ? "" : "s"}</span>
-    </button>
-    ${collapsed.has(y) ? "" :
-    rows.map((n, i) => `
-      <div class="row ${read.has(n.id) ? "is-read" : ""} ${i % 2 ? "alt" : ""}">
-        <span class="qbar q${quarter(n.date)}" aria-hidden="true"></span>
-        <button class="readbox" data-read="${esc(n.id)}" role="checkbox"
-          aria-checked="${read.has(n.id)}"
-          title="${read.has(n.id) ? "Mark as unread" : "Mark as read"}">
-          <span class="box">${ICON.check}</span></button>
-        <button class="open" data-id="${esc(n.id)}">
-          <span class="d">${fmt(n.date)}</span>
-          <span class="body">
-            <span class="t">${hl(n.title, query)}</span>
+  const expanded = y => query !== "" || onlyBm || !collapsed.has(y);
+
+  el.innerHTML = [...years].map(([y, months]) => {
+    const all = [...months.values()].flat();
+    const done = all.filter(n => read.has(n.id)).length;
+    return `
+    <section class="ymod">
+      <button class="yband" data-year-toggle="${y}" aria-expanded="${expanded(y)}">
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        <b>${y}</b>
+        <span class="tally">${all.length} note${all.length === 1 ? "" : "s"}${
+          done ? ` &middot; ${done} read` : ""}</span>
+      </button>
+      ${!expanded(y) ? "" : [...months].map(([m, rows]) => `
+      <section class="mgroup" style="--acc:${accent(m)}">
+        <div class="mhead">
+          <h3>${fmtMonth(m)}<span>${rows.length}</span></h3>
+          <span class="clab" aria-hidden="true">Status</span>
+          <span class="clab" aria-hidden="true">Saved</span>
+        </div>
+        ${rows.map(n => `
+        <div class="mrow${read.has(n.id) ? " is-read" : ""}">
+          <span class="d">${fmtDay(n.date)}</span>
+          <button class="open" data-id="${esc(n.id)}">
+            <span class="t">${hl(n.topic || n.title, query)}</span>
             ${matchLine(n, query)}
-          </span>
-        </button>
-        <button class="save" data-bm="${esc(n.id)}" aria-pressed="${bm.has(n.id)}"
-          title="Save this note">${ICON.bookmark}${bm.has(n.id) ? "Saved" : "Save"}</button>
-      </div>`).join("")}`).join("");
+          </button>
+          <button class="pill p-read" data-read="${esc(n.id)}" role="checkbox"
+            aria-checked="${read.has(n.id)}" aria-pressed="${read.has(n.id)}"
+            title="${read.has(n.id) ? "Mark as unread" : "Mark as read"}">
+            ${read.has(n.id) ? ICON.check + "Read" : "Unread"}</button>
+          <button class="pill p-save" data-bm="${esc(n.id)}" aria-pressed="${bm.has(n.id)}"
+            title="${bm.has(n.id) ? "Remove from saved" : "Save this note"}">
+            ${ICON.bookmark}${bm.has(n.id) ? "Saved" : "Save"}</button>
+        </div>`).join("")}
+      </section>`).join("")}
+    </section>`;
+  }).join("");
 }
 
 /* ── detail ─────────────────────────────────────────────────────────────── */
@@ -574,29 +689,34 @@ function paintSheetSave() {
   btn.setAttribute("aria-pressed", bm.has(openId));
 }
 
+/* The community posts arrive as bare newlines with nothing between the lines,
+   which read as one compacted block. Give every line its own paragraph, and
+   bold the two weekly lead-ins — Felix's Notes and the Heartbeat Scanner — so
+   the two-links-a-week format reads as a list rather than a wall. */
+function noteHtml(text) {
+  return text.split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map(line => `<p>${linkify(line).replace(
+      /(Felix[’']s Notes|Heartbeat Scanner)(?=\s*[–—:-])/g,
+      "<strong>$1</strong>")}</p>`)
+    .join("");
+}
+
 function openNote(id) {
   const n = NOTES.find(x => x.id === id);
   if (!n) return;
   openId = id;
 
   document.getElementById("s-when").textContent = fmtLong(n.date);
-  document.getElementById("s-title").textContent = n.title;
-  document.getElementById("s-by").textContent = n.author;
+  document.getElementById("s-title").textContent = n.topic || n.title;
+  document.getElementById("s-by").textContent =
+    n.topic ? `${n.author} · ${n.title}` : n.author;
   paintSheetSave();
 
-  const { links, prose } = splitLinks(n.body || n.text || "");
-  const linkBlock = links.length ? `<div class="toplinks">${links.map(l => `
-    <a class="tl" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">
-      <b>${esc(l.label)}</b>
-      <span>${esc(l.url)}</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
-    </a>`).join("")}</div>` : "";
-
+  const text = n.body || n.text || "";
   document.getElementById("s-text").innerHTML =
-    linkBlock
-    + (linkBlock && prose ? `<hr class="rule">` : "")
-    + (prose ? `<div class="prose">${linkify(prose)}</div>` : "");
+    text ? `<div class="prose">${noteHtml(text)}</div>` : "";
 
   document.getElementById("s-mynote").value = mine[id] || "";
   document.getElementById("s-tick").classList.remove("on");
@@ -642,6 +762,8 @@ document.getElementById("bmfilter").addEventListener("click", () => {
 
 document.getElementById("year").addEventListener("change", e => {
   year = e.target.value;
+  /* Filtering to a year is a request to see it — never a collapsed header. */
+  if (year !== "all") collapsed.delete(year);
   renderList();
 });
 
